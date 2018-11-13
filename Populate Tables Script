@@ -23,18 +23,24 @@ values (1, "Apple"),
 (9, "Microsoft"),
 (10, "Redhat");
 
-
-insert into product(product_id, cost, description, supplier_id, amount, name)
-values 	
-	(1, 999.99, "Next Generation iPhone", 1, 100, "iPhone X"),
-	(2, 199.99, "Touch screen music player", 1, 60, "iPod Touch, Generation 8"),
-        (3, 1499.99, "Compact laptop", 1, 45, "MacBook Air"),
-        (4, 149.99, "Wireless headphones", 1, 200, "Air Pods");
-	
-insert into product(product_id, cost, description, supplier_id, amount, name)
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
 values
-	(41, 79.99, "Old CPU chip", 4, 74, "i3"),
-    	(42, 119.99, "Slow CPU chip", 4, 53, "i5"),
-    	(43, 199.99, "Modern CPU chip", 4, 50, "i7"),
-    	(44, 599.99, "Lighting fast CPU chip", 4, 38, "i9"),
-    	(45, 9999.99, "Server level CPU", 4, 12, "Xeon CPU");
+	(41, 79.99, "Old CPU chip", 4, 74, "i3", 15),
+    (42, 119.99, "Slow CPU chip", 4, 53, "i5", 20),
+    (43, 199.99, "Modern CPU chip", 4, 50, "i7", 25),
+    (44, 599.99, "Lighting fast CPU chip", 4, 38, "i9", 15),
+    (45, 9999.99, "Server level CPU", 4, 12, "Xeon CPU", 5);
+    
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
+values
+	(51, 249.49, "Small, smart TV", 5, 121, "32 - inch Samsung Flatscreen", 50),
+    (52, 379.95, "Medium, smart TV", 5, 79, "40 - inch Samsung Flatscreen", 30),
+    (53, 699.79, "Large, smart TV", 5, 55, "60 - inch Samsung Flatscreen", 20),
+    (54, 3299,99, "Large, 4k smart TV", 5, 32, "60 - inch Samsung 4k HD", 10);
+    
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
+values 	
+	(1, 999.99, "Next Generation iPhone", 1, 100, "iPhone X", 25),
+	(2, 199.99, "Touch screen music player", 1, 60, "iPod Touch, Generation 8", 25),
+	(3, 1499.99, "Compact laptop", 1, 45, "MacBook Air", 10),
+	(4, 149.99, "Wireless headphones", 1, 200, "Air Pods", 75);
