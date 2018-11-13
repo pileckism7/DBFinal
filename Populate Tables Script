@@ -10,3 +10,15 @@ values (1 , 'Pileckism7', 'Mantas', 'Pileckis', 'pileckism7@email.com'),
 (8 , 'Pittb8', 'Brad', 'Pitt', 'Pittb8@email.com'),
 (9 , 'Rosed6', 'Demi', 'Rose', 'Rosed6@email.com'),
 (10 , 'Ambriosioa9', 'Alessandra', 'Ambrosio', 'Ambriosioa9@email.com');
+
+insert into supplier (supplier_id, name)
+values (1, "Apple"),
+(2, "Lenovo"),
+(3, "Nvidia"),
+(4, "Intel"),
+(5, "Samsung"),
+(6, "Toshiba"),
+(7, "Dell"),
+(8, "Playstation"),
+(9, "Microsoft"),
+(10, "Redhat");
