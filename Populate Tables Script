@@ -10,5 +10,3 @@ values (1 , 'Pileckism7', 'Mantas', 'Pileckis', 'pileckism7@email.com'),
 (8 , 'Pittb8', 'Brad', 'Pitt', 'Pittb8@email.com'),
 (9 , 'Rosed6', 'Demi', 'Rose', 'Rosed6@email.com'),
 (10 , 'Ambriosioa9', 'Alessandra', 'Ambrosio', 'Ambriosioa9@email.com');
-select * 
-from customer;
