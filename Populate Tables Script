@@ -22,3 +22,10 @@ values (1, "Apple"),
 (8, "Playstation"),
 (9, "Microsoft"),
 (10, "Redhat");
+
+
+insert into product(product_id, cost, description, supplier_id, amount, name)
+values 	(1, 999, "Next Generation iPhone", 1, 100, "iPhone X"),
+			  (2, 199, "Touch screen music player", 1, 60, "iPod Touch, Generation 8"),
+        (3, 1499, "Compact laptop", 1, 45, "MacBook Air"),
+        (4, 149, "Wireless headphones", 1, 200, "Air Pods");
