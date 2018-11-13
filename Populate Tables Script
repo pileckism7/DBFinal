@@ -52,3 +52,12 @@ values
     (93, 249.99, "Current gaming system", 9, 200, "Playstation 4", 75),
     (94, 339.95, "Dual audio, reclining gaming chair", 9, 45, "PS Pro - Gaming Chair", 20),
     (95, 149.99, "High Performance Racing Wheel", 9, 30, "PS Pro - Gaming Steering Wheel", 15);
+    
+    
+    insert into product (product_id, cost, description, supplier_id, amount, name, min_stock)
+values (31, 650.99, 'Most Powerful GPU', 3, 10, 'GIGABYTE GeForce GTX 1080', 10),
+(32, 499.99, 'Quite Powerful GPU', 3, 10, 'MSI GeForce GTX 1080', 10),
+(33, 469.99, 'Very Powerfull GPU', 3, 10, 'EVGA GeForce GTX 1080', 10),
+(34, 420.99, 'Cheapest GPU', 3, 10, 'ASUS GeForce GTX 1080', 10),
+(35, 550.99, 'Somewhat Powerful GPU', 3, 10, 'ZOTAC GeForce GTX 1080', 10),
+(36, 580.99, 'An Okay GPU', 3, 10, 'XFX GeForce GTX 1080', 10);
