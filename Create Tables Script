@@ -1,32 +1,5 @@
 <<ADD use [DATABASE_NAME]; >>
 
-CREATE TABLE `area` (
-  `area_id` int(11) NOT NULL AUTO_INCREMENT,
-  `shipping` double NOT NULL,
-  PRIMARY KEY (`area_id`),
-  UNIQUE KEY `region_id_UNIQUE` (`area_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `cart` (
-  `cart_id` int(11) NOT NULL AUTO_INCREMENT,
-  `customer_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `num_products` int(11) NOT NULL,
-  PRIMARY KEY (`cart_id`),
-  KEY `cart_product_idx` (`product_id`),
-  KEY `cart_customer_idx` (`customer_id`),
-  CONSTRAINT `cart_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cart_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `category` (
-  `category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`category_id`),
-  UNIQUE KEY `category_id_UNIQUE` (`category_id`),
-  UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `customer` (
   `customer_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) NOT NULL,
@@ -39,6 +12,42 @@ CREATE TABLE `customer` (
   UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
+CREATE TABLE `supplier` (
+  `supplier_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`supplier_id`),
+  UNIQUE KEY `supplier_id_UNIQUE` (`supplier_id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `product` (
+  `product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cost` varchar(45) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `amount` int(11) NOT NULL,
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `product_id_UNIQUE` (`product_id`),
+  KEY `FK_supplier_product_idx` (`supplier_id`),
+  CONSTRAINT `FK_supplier_product` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`supplier_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `area` (
+  `area_id` int(11) NOT NULL AUTO_INCREMENT,
+  `shipping` double NOT NULL,
+  PRIMARY KEY (`area_id`),
+  UNIQUE KEY `region_id_UNIQUE` (`area_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `category` (
+  `category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`category_id`),
+  UNIQUE KEY `category_id_UNIQUE` (`category_id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `customer_area` (
   `street` varchar(45) NOT NULL,
@@ -78,17 +87,7 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `product` (
-  `product_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cost` varchar(45) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `supplier_id` int(11) NOT NULL,
-  `amount` int(11) NOT NULL,
-  PRIMARY KEY (`product_id`),
-  UNIQUE KEY `product_id_UNIQUE` (`product_id`),
-  KEY `FK_supplier_product_idx` (`supplier_id`),
-  CONSTRAINT `FK_supplier_product` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`supplier_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 CREATE TABLE `product_rating` (
   `product_id` int(11) NOT NULL,
@@ -119,10 +118,14 @@ CREATE TABLE `restock` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `supplier` (
-  `supplier_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`supplier_id`),
-  UNIQUE KEY `supplier_id_UNIQUE` (`supplier_id`),
-  UNIQUE KEY `name_UNIQUE` (`name`)
+CREATE TABLE `cart` (
+  `cart_id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `num_products` int(11) NOT NULL,
+  PRIMARY KEY (`cart_id`),
+  KEY `cart_product_idx` (`product_id`),
+  KEY `cart_customer_idx` (`customer_id`),
+  CONSTRAINT `cart_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cart_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
