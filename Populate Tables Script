@@ -1,0 +1,14 @@
+
+insert into customer (customer_id, username, first_name, last_name, email)
+values (1 , 'Pileckism7', 'Mantas', 'Pileckis', 'pileckism7@email.com'),
+(2 , 'Pricem2', 'Martin', 'Price', 'pricem2@email.com'),
+(3 , 'Malitskyc5', 'Chris', 'Malitsky', 'Malitskyc5@email.com'),
+(4 , 'PaytonM3', 'Payton', 'Manning', 'PaytonM3@email.com'),
+(5 , 'Rosed2', 'Derrick', 'Rose', 'Rosed2@email.com'),
+(6 , 'Rogersa6', 'Aarin', 'Rogers', 'Rogersa6@email.com'),
+(7 , 'Bilzeriand1', 'Dan', 'Bilzarian', 'Bilzeriand1@email.com'),
+(8 , 'Pittb8', 'Brad', 'Pitt', 'Pittb8@email.com'),
+(9 , 'Rosed6', 'Demi', 'Rose', 'Rosed6@email.com'),
+(10 , 'Ambriosioa9', 'Alessandra', 'Ambrosio', 'Ambriosioa9@email.com');
+select * 
+from customer;
