@@ -36,7 +36,7 @@ values
 	(51, 249.49, "Small, smart TV", 5, 121, "32 - inch Samsung Flatscreen", 50),
     (52, 379.95, "Medium, smart TV", 5, 79, "40 - inch Samsung Flatscreen", 30),
     (53, 699.79, "Large, smart TV", 5, 55, "60 - inch Samsung Flatscreen", 20),
-    (54, 3299,99, "Large, 4k smart TV", 5, 32, "60 - inch Samsung 4k HD", 10);
+    (54, 3299.99, "Large, 4k smart TV", 5, 32, "60 - inch Samsung 4k HD", 10);
     
 insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
 values 	
