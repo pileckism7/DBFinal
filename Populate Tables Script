@@ -61,3 +61,10 @@ values (31, 650.99, 'Most Powerful GPU', 3, 10, 'GIGABYTE GeForce GTX 1080', 10)
 (34, 420.99, 'Cheapest GPU', 3, 10, 'ASUS GeForce GTX 1080', 10),
 (35, 550.99, 'Somewhat Powerful GPU', 3, 10, 'ZOTAC GeForce GTX 1080', 10),
 (36, 580.99, 'An Okay GPU', 3, 10, 'XFX GeForce GTX 1080', 10);
+
+insert into product (product_id, cost, description, supplier_id, amount, name, min_stock)
+values(21, 1000, "Laptop for gaming", 2, 50, "t450s", 50),
+(22, 500, "Laptop for office use", 2, 100, "t440", 100),
+(23, 750, "Laptop for personal use", 2, 50, "x1 carbon", 50),
+(24, 75, "Keyboard", 2, 75, "ThinkKeyboard", 75),
+(25, 800, "Mouse", 2, 40, "ThinkMouse", 40);
