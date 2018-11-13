@@ -47,11 +47,11 @@ values
     
 insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
 values
-	(91, 149.49, "Throwback gaming system", 9, 100, "Playstation 2", 50),
-    (92, 179.99, "Older gaming system", 9, 150, "Playstation 3", 60),
-    (93, 249.99, "Current gaming system", 9, 200, "Playstation 4", 75),
-    (94, 339.95, "Dual audio, reclining gaming chair", 9, 45, "PS Pro - Gaming Chair", 20),
-    (95, 149.99, "High Performance Racing Wheel", 9, 30, "PS Pro - Gaming Steering Wheel", 15);
+	(91, 149.49, "Throwback gaming system", 8, 100, "Playstation 2", 50),
+    (92, 179.99, "Older gaming system", 8, 150, "Playstation 3", 60),
+    (93, 249.99, "Current gaming system", 8, 200, "Playstation 4", 75),
+    (94, 339.95, "Dual audio, reclining gaming chair", 8, 45, "PS Pro - Gaming Chair", 20),
+    (95, 149.99, "High Performance Racing Wheel", 8, 30, "PS Pro - Gaming Steering Wheel", 15);
     
     
     insert into product (product_id, cost, description, supplier_id, amount, name, min_stock)
