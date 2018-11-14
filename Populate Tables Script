@@ -71,3 +71,9 @@ values(21, 1000, "Laptop for gaming", 2, 50, "t450s", 50),
 
 insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
 values (101, 49.99, "Paid Support service for Redhat", 10, 100,  "Redhat", 100);
+
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
+values(92, 99.99, "Old gaming console", 9, 100, "Xbox 360", 100),
+(91, 299.99, "New gaming console", 9, 150, "Xbox One", 150),
+(93, 350.99, "Newest, high speed, 4k gaming console", 9, 200, "Xbox One X", 200),
+(94, 99.99, "Gaming headset", 9, 100, "Xbox Headset", 100);
