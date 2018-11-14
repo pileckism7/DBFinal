@@ -68,3 +68,6 @@ values(21, 1000, "Laptop for gaming", 2, 50, "t450s", 50),
 (23, 750, "Laptop for personal use", 2, 50, "x1 carbon", 50),
 (24, 75, "Keyboard", 2, 75, "ThinkKeyboard", 75),
 (25, 800, "Mouse", 2, 40, "ThinkMouse", 40);
+
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
+values (101, 49.99, "Paid Support service for Redhat", 10, 100,  "Redhat", 100);
