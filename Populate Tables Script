@@ -86,4 +86,4 @@ values(71, 1000, 'Heavy Duty Work laptop', 2, 50, "hgb68", 50),
 (75, 500.99, '166Hz Monitor', 2, 40, "gbg11", 40);
 
 insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values (69, 98.000, "Hand Carved in Lithuania by the gods", 6, 1,  "Mantis's ToshMac", 0);
+values (69, 98000.00, "Hand Carved in Lithuania by the gods", 6, 1,  "Mantis's ToshMac", 0);
