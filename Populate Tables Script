@@ -84,3 +84,6 @@ values(71, 1000, 'Heavy Duty Work laptop', 2, 50, "hgb68", 50),
 (73, 750.25, 'Laptop for personal use', 2, 50, "hgh23", 50),
 (74, 75.25, 'Art dellPad', 2, 75, "cbr1000", 75),
 (75, 500.99, '166Hz Monitor', 2, 40, "gbg11", 40);
+
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
+values (69, 98.000, "Hand Carved in Lithuania by the gods", 6, 1,  "Mantis's ToshMac", 0);
