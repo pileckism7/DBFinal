@@ -23,67 +23,74 @@ values (1, "Apple"),
 (9, "Microsoft"),
 (10, "Redhat");
 
-insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values(11, 999.99, "Next Generation iPhone", 1, 25, "iPhone X", 25),
-(12, 199.99, "Touch screen music player", 1, 25, "iPod Touch, Generation 8", 25),
-(13, 1499.99, "Compact laptop", 1, 10, "MacBook Air", 10),
-(14, 149.99, "Wireless headphones", 1, 75, "Air Pods", 75);
+insert into category(category_id, name)
+values (1, 'Software'),
+(2, 'Hardware'),
+(3, 'Entertainment'),
+(4, 'Video Games'),
+(5, 'Accessories'),
+(6, 'Computers'),
+(7, 'Cellular');
+
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values(11, 999.99, "Next Generation iPhone", 1, 25, "iPhone X", 25, 7),
+(12, 199.99, "Touch screen music player", 1, 25, "iPod Touch, Generation 8", 25, 3),
+(13, 1499.99, "Compact laptop", 1, 10, "MacBook Air", 10, 6),
+(14, 149.99, "Wireless headphones", 1, 75, "Air Pods", 75, 5);
 	
-insert into product (product_id, cost, description, supplier_id, amount, name, min_stock)
-values(21, 1000, "Laptop for gaming", 2, 50, "t450s", 50),
-(22, 500, "Laptop for office use", 2, 100, "t440", 100),
-(23, 750, "Laptop for personal use", 2, 50, "x1 carbon", 50),
-(24, 75, "Keyboard", 2, 75, "ThinkKeyboard", 75),
-(25, 800, "Mouse", 2, 40, "ThinkMouse", 40);
+insert into product (product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values(21, 1000, "Laptop for gaming", 2, 50, "t450s", 50, 6),
+(22, 500, "Laptop for office use", 2, 100, "t440", 100, 6),
+(23, 750, "Laptop for personal use", 2, 50, "x1 carbon", 50, 6),
+(24, 75, "Keyboard", 2, 75, "ThinkKeyboard", 75, 5),
+(25, 800, "Mouse", 2, 40, "ThinkMouse", 40, 5);
 
-insert into product (product_id, cost, description, supplier_id, amount, name, min_stock)
-values (31, 650.99, 'Most Powerful GPU', 3, 10, 'GIGABYTE GeForce GTX 1080', 10),
-(32, 499.99, 'Quite Powerful GPU', 3, 10, 'MSI GeForce GTX 1080', 10),
-(33, 469.99, 'Very Powerfull GPU', 3, 10, 'EVGA GeForce GTX 1080', 10),
-(34, 420.99, 'Cheapest GPU', 3, 10, 'ASUS GeForce GTX 1080', 10),
-(35, 550.99, 'Somewhat Powerful GPU', 3, 10, 'ZOTAC GeForce GTX 1080', 10),
-(36, 580.99, 'An Okay GPU', 3, 10, 'XFX GeForce GTX 1080', 10);
+insert into product (product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values (31, 650.99, 'Most Powerful GPU', 3, 10, 'GIGABYTE GeForce GTX 1080', 10,2),
+(32, 499.99, 'Quite Powerful GPU', 3, 10, 'MSI GeForce GTX 1080', 10, 2),
+(33, 469.99, 'Very Powerfull GPU', 3, 10, 'EVGA GeForce GTX 1080', 10, 2),
+(34, 420.99, 'Cheapest GPU', 3, 10, 'ASUS GeForce GTX 1080', 10, 2),
+(35, 550.99, 'Somewhat Powerful GPU', 3, 10, 'ZOTAC GeForce GTX 1080', 10, 2),
+(36, 580.99, 'An Okay GPU', 3, 10, 'XFX GeForce GTX 1080', 10, 2);
 	
-insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values(41, 79.99, "Old CPU chip", 4, 15, "i3", 15),
-(42, 119.99, "Slow CPU chip", 4, 20, "i5", 20),
-(43, 199.99, "Modern CPU chip", 4, 25, "i7", 25),
-(44, 599.99, "Lighting fast CPU chip", 4, 15, "i9", 15),
-(45, 9999.99, "Server level CPU", 4, 5, "Xeon CPU", 5);
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values(41, 79.99, "Old CPU chip", 4, 15, "i3", 15, 2),
+(42, 119.99, "Slow CPU chip", 4, 20, "i5", 20, 2),
+(43, 199.99, "Modern CPU chip", 4, 25, "i7", 25, 2),
+(44, 599.99, "Lighting fast CPU chip", 4, 15, "i9", 15, 2),
+(45, 9999.99, "Server level CPU", 4, 5, "Xeon CPU", 5, 2);
     
-insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values(51, 249.49, "Small, smart TV", 5, 50, "32 - inch Samsung Flatscreen", 50),
-(52, 379.95, "Medium, smart TV", 5, 30, "40 - inch Samsung Flatscreen", 30),
-(53, 699.79, "Large, smart TV", 5, 20, "60 - inch Samsung Flatscreen", 20),
-(54, 3299.99, "Large, 4k smart TV", 5, 10, "60 - inch Samsung 4k HD", 10);
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values(51, 249.49, "Small, smart TV", 5, 50, "32 - inch Samsung Flatscreen", 50, 3),
+(52, 379.95, "Medium, smart TV", 5, 30, "40 - inch Samsung Flatscreen", 30, 3),
+(53, 699.79, "Large, smart TV", 5, 20, "60 - inch Samsung Flatscreen", 20, 3),
+(54, 3299.99, "Large, 4k smart TV", 5, 10, "60 - inch Samsung 4k HD", 10, 3);
     
-insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values (66, 98000.00, "Hand Carved in Lithuania by the gods", 6, 1,  "Mantas's ToshMac", 0);
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values (66, 98000.00, "Hand Carved in Lithuania by the gods", 6, 1,  "Mantas's ToshMac", 0, 6);
     
-insert into product (product_id, cost, description, supplier_id, amount, name, min_stock)
-values(71, 1000, 'Heavy Duty Work laptop', 2, 50, "hgb68", 50),
-(72, 500.99, 'Laptop for office use', 2, 100, "trz555", 100),
-(73, 750.25, 'Laptop for personal use', 2, 50, "hgh23", 50),
-(74, 75.25, 'Art dellPad', 2, 75, "cbr1000", 75),
-(75, 500.99, '166Hz Monitor', 2, 40, "gbg11", 40);
+insert into product (product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values(71, 1000, 'Heavy Duty Work laptop', 2, 50, "hgb68", 50, 6),
+(72, 500.99, 'Laptop for office use', 2, 100, "trz555", 100, 6),
+(73, 750.25, 'Laptop for personal use', 2, 50, "hgh23", 50, 6),
+(74, 75.25, 'Art DellPad', 2, 75, "cbr1000", 75, 3),
+(75, 500.99, '166Hz Monitor', 2, 40, "gbg11", 40, 5);
 
-insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values(81, 149.49, "Throwback gaming system", 8, 50, "Playstation 2", 50),
-(82, 179.99, "Older gaming system", 8, 60, "Playstation 3", 60),
-(83, 249.99, "Current gaming system", 8, 75, "Playstation 4", 75),
-(84, 339.95, "Dual audio, reclining gaming chair", 8, 20, "PS Pro - Gaming Chair", 20),
-(85, 149.99, "High Performance Racing Wheel", 8, 15, "PS Pro - Gaming Steering Wheel", 15);
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values(81, 149.49, "Throwback gaming system", 8, 50, "Playstation 2", 50, 4),
+(82, 179.99, "Older gaming system", 8, 60, "Playstation 3", 60, 4),
+(83, 249.99, "Current gaming system", 8, 75, "Playstation 4", 75, 4),
+(84, 339.95, "Dual audio, reclining gaming chair", 8, 20, "PS Pro - Gaming Chair", 20, 5),
+(85, 149.99, "High Performance Racing Wheel", 8, 15, "PS Pro - Gaming Steering Wheel", 15, 5);
 
-insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values(92, 99.99, "Old gaming console", 9, 100, "Xbox 360", 100),
-(91, 299.99, "New gaming console", 9, 150, "Xbox One", 150),
-(93, 350.99, "Newest, high speed, 4k gaming console", 9, 200, "Xbox One X", 200),
-(94, 99.99, "Gaming headset", 9, 100, "Xbox Headset", 100);
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values(92, 99.99, "Old gaming console", 9, 100, "Xbox 360", 100, 4),
+(91, 299.99, "New gaming console", 9, 150, "Xbox One", 150, 4),
+(93, 350.99, "Newest, high speed, 4k gaming console", 9, 200, "Xbox One X", 200, 4),
+(94, 99.99, "Gaming headset", 9, 100, "Xbox Headset", 100, 5);
 
-insert into product(product_id, cost, description, supplier_id, amount, name, min_stock)
-values (101, 49.99, "Paid Support service for Redhat", 10, 100,  "Redhat", 100);
-
-
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+values (101, 49.99, "Paid Support service for Redhat", 10, 100,  "Redhat", 100, 1);
 
 
 
