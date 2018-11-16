@@ -1,0 +1,31 @@
+# Admin view of our customers
+CREATE OR REPLACE VIEW admin_our_customers AS
+SELECT
+    username,
+	CONCAT(first_name, ' ', last_name) AS name,
+    email
+FROM customer;
+
+# Admin view of partners customers
+CREATE OR REPLACE VIEW admin_their_customers AS
+	SELECT 
+		customer.CustomerID AS customerID,
+		CONCAT(contact.FirstName, ' ', contact.LastName) AS name,
+		contact.EmailAddress AS email
+	FROM adventureworks.customer
+	JOIN adventureworks.individual ON customer.CustomerID = individual.CustomerID
+	JOIN adventureworks.contact ON individual.ContactID = contact.ContactID
+    
+UNION
+	SELECT
+		customers.id AS customerID,
+		CONCAT(customers.first_name, ' ', customers.last_name) AS name,
+		customers.email_address AS email
+	FROM northwind.customers
+    
+UNION
+	SELECT
+		customer.customer_id As customerID,
+        CONCAT(customer.first_name, ' ', customer.last_name) AS name,
+        customer.email AS email
+	FROM sakila.customer;
