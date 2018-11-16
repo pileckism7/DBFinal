@@ -1,0 +1,9 @@
+CREATE OR REPLACE VIEW product_restock AS
+SELECT
+	product.name AS product,
+	supplier.name AS supplier,
+    product.min_stock AS amount,
+    restock.date
+FROM restock
+JOIN product ON restock.product_id = product.product_id
+JOIN supplier ON product.supplier_id = supplier.supplier_id;
