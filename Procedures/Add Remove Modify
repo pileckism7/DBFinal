@@ -76,3 +76,20 @@ END$$
 DELIMITER ;
 
 
+CREATE PROCEDURE `ModifyProduct`(p_id int,p_name varchar(45), p_description varchar(255), p_amount int, p_min_stock int, p_cost int, p_sup_id int, p_cat_id int)
+BEGIN
+
+insert into product(product_id, cost, description, supplier_id, amount, name, min_stock, category_id)
+ VALUES(p_id, p_cost, p_description, p_sup_id, p_amount, p_name, p_min_stock, p_cat_id)
+  ON DUPLICATE KEY UPDATE    
+    cost = p_cost,
+    description = p_description,
+    supplier_id = p_supplier_id,
+    amount = p_amount,
+    name = p_name,
+    min_stock = p_min_stock,
+    category_id = p_cat_id;
+    
+END
+
+
