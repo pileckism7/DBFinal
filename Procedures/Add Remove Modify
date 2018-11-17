@@ -7,6 +7,13 @@ INSERT INTO customer (first_name, last_name, email, username)
 END$$
 DELIMITER ;
 
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `AddSupplier`(s_name varchar(45))
+BEGIN
+
+INSERT INTO supplier (name)
+ VALUES(s_name);
+END
+
 
 DELIMITER $$
 CREATE DEFINER=`pileckism7`@`%` PROCEDURE `DeleteCustomer`(c_id int)
