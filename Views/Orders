@@ -1,0 +1,7 @@
+CREATE OR REPLACE VIEW orders AS
+select o.order_id AS 'Order', o.date AS 'Order Date', CONCAT(c.first_name, ' ' ,c.last_name) AS 'Customer', p.name AS 'Product', p.description AS 'Description', 
+	   CONCAT('$',p.cost) AS 'Price', o.amount AS 'Quantity', CONCAT('$',(p.cost * o.amount)) AS 'Total'
+from pileckism7.order o
+join pileckism7.product p USING (product_id)
+join pileckism7.supplier s USING (supplier_id)
+join pileckism7.customer c USING (customer_id);
