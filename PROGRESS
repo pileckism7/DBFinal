@@ -1,20 +1,40 @@
 1.Ability to view, add, remove and modify your customer information 
 //DONE
+View -- > admin_our_customers
+Add  ---> AddCustomer(first_name, last_name, email, username)
+Remove -> DeleteCustomer(customer_id)
+Modify -> ModifyCustomer(customer_id, first_name, last_name, email, username)
 
 2.Ability to view your partners’ customer information
 //DONE
+View -- > admin_their_customers
+
 
 3.Ability to view, add, remove and modify your supplier information.
-//DONE
+//IN PROGRESS
+View -- > ??
+Add  ---> ??
+Remove -> DeleteSupplier(supplier_id)
+Modify -> ModifyCustomer(supplier_id, name)
+
 
 4.Ability to view, add, remove and modify your product information
-//DONE
+// IN PROGRESS
+View -- > our_product
+Add  ---> ??
+Remove -> ??
+Modify -> ??
 
 5.Ability to view, your partners’ product information
-//DONE
+// IN PROGRESS
+View -- > sakila_product
+View -- > northwind_product
+View -- > adventureworks_product
+View -- > ?? Combined Partners
 
 6.Ability to view your product inventory
-//IN PROGRESS
+//DONE
+View -- > overall_inventory
 
 7. Ability to generate a restocking order (should be saved in a ”restocking” table) if the supply of any of your
 products falls below the minimum stock level
