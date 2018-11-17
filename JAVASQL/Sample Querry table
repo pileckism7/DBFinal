@@ -1,0 +1,20 @@
+ResultSet rs = stat.executeQuery("SELECT * FROM orders");
+			   ResultSetMetaData rsmd = rs.getMetaData();
+			   int columnsNumber = rsmd.getColumnCount();
+			   for (int i = 1; i <= columnsNumber; i++) {
+		           if (i > 1) System.out.print("\t ");
+		           System.out.print(rsmd.getColumnName(i));
+		       }
+			   System.out.println("");
+
+			   while (rs.next()) {
+			      
+			       
+			       
+			       for (int i = 1; i <= columnsNumber; i++) {
+			           if (i > 1) System.out.print("\t  ");
+			           String columnValue = rs.getString(i);
+			           System.out.print(columnValue);
+			       }
+			       System.out.println("");
+			   }
