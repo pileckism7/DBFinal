@@ -9,14 +9,13 @@ CREATE OR REPLACE VIEW sakila_product AS
 SELECT title as Name, 'Movie' as Type, category as Category, description as Description, price as Price
 from sakila.film_list;
 
-#adventureworks_product
 CREATE OR REPLACE VIEW adventureworks_product AS
-SELECT a.name as Name, 'Biking' as Type, psub.Name as Category, pdescription.Description, ListPrice as Price, vendor.Name as Supplier, pinv.Quantity
+SELECT DISTINCT (a.name) as Name, 'Biking' as Type, psub.Name as Category, ListPrice as Price, 
+  vendor.Name as Supplier, concat(a.name, ' by ' , vendor.Name) AS Description 
 from adventureworks.product a 
 join adventureworks.productsubcategory psub USING (ProductSubcategoryID)
 join adventureworks.productmodel pmodel USING (ProductModelID)
 join adventureworks.productmodelproductdescriptionculture pmodelcult USING (ProductModelID)
 join adventureworks.productdescription pdescription USING (ProductDescriptionID)
 join adventureworks.productvendor pvendor USING (ProductID)
-join adventureworks.vendor vendor USING (VendorID)
-join adventureworks.productinventory pinv USING (ProductID);
+join adventureworks.vendor vendor USING (VendorID);
