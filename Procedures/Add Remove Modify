@@ -7,12 +7,20 @@ INSERT INTO customer (first_name, last_name, email, username)
 END$$
 DELIMITER ;
 
+
+
+
+
 CREATE PROCEDURE `AddSupplier`(s_name varchar(45))
 BEGIN
 
 INSERT INTO supplier (name)
  VALUES(s_name);
 END
+
+
+
+
 
 CREATE PROCEDURE `AddProduct`(p_name varchar(45), description varchar(255), amount int, min_stock int, cost int, sup_id int, cat_id int)
 BEGIN
@@ -22,8 +30,12 @@ insert into product(cost, description, supplier_id, amount, name, min_stock, cat
 END
 
 
+
+
+
+
 DELIMITER $$
-CREATE DEFINER=`pileckism7`@`%` PROCEDURE `DeleteCustomer`(c_id int)
+CREATE PROCEDURE `DeleteCustomer`(c_id int)
 BEGIN
 DELETE 
 from customer 
@@ -32,8 +44,11 @@ END$$
 DELIMITER ;
 
 
+
+
+
 DELIMITER $$
-CREATE DEFINER=`pileckism7`@`%` PROCEDURE `DeleteSupplier`(s_id int)
+CREATE PROCEDURE `DeleteSupplier`(s_id int)
 BEGIN
 DELETE 
 from supplier 
@@ -41,12 +56,20 @@ where supplier_id = s_id;
 END$$
 DELIMITER ;
 
+
+
+
+
 CREATE PROCEDURE `RemoveProduct`(p_id int)
 BEGIN
 DELETE 
 from product
 where product_id = p_id;
 END
+
+
+
+
 
 
 DELIMITER $$
@@ -63,6 +86,10 @@ INSERT INTO customer (customer_id, first_name, last_name, email, username)
 END$$
 DELIMITER ;
 
+
+
+
+
 DELIMITER $$
 CREATE PROCEDURE `ModifySupplier`(s_id int, s_name varchar(45))
 BEGIN
@@ -74,6 +101,10 @@ INSERT INTO supplier (supplier_id, name)
     
 END$$
 DELIMITER ;
+
+
+
+
 
 
 CREATE PROCEDURE `ModifyProduct`(p_id int,p_name varchar(45), p_description varchar(255), p_amount int, p_min_stock int, p_cost int, p_sup_id int, p_cat_id int)
