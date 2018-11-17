@@ -1,17 +1,23 @@
 #northwind_products view
 CREATE OR REPLACE VIEW northwind_product AS
-SELECT product_name as Name, 'Food' as Type, category as Category, quantity_per_unit as Description, list_price as Price, s.company as Supplier
+SELECT product_name as 'Name', 'Food' as 'Type', category as 'Category', quantity_per_unit as 'Description', list_price as 'Price', s.company as 'Supplier'
 from northwind.products n
 join northwind.suppliers s ON (s.id = supplier_ids);
 
 #sakila_products view
 CREATE OR REPLACE VIEW sakila_product AS
-SELECT title as Name, 'Movie' as Type, category as Category, description as Description, price as Price
-from sakila.film_list;
+SELECT DISTINCT fl.title as 'Name', 'Movie' as 'Type', fl.category as 'Category', fl.description as 'Description', fl.price as 'Price', concat (co.country, ', ' ,c.city) AS 'Supplier'
+from sakila.film_list fl
+join sakila.inventory inv ON (inv.film_id = fl.FID)
+join sakila.store s USING (store_id)
+join sakila.address addr USING (address_id)
+join sakila.city c USING (city_id)
+join sakila.country co USING (country_id);
 
+#adventureworks_products view
 CREATE OR REPLACE VIEW adventureworks_product AS
-SELECT DISTINCT (a.name) as Name, 'Biking' as Type, psub.Name as Category, ListPrice as Price, 
-  vendor.Name as Supplier, concat(a.name, ' by ' , vendor.Name) AS Description 
+SELECT DISTINCT (a.name) as 'Name', 'Biking' as 'Type', psub.Name as 'Category', ListPrice as 'Price', 
+  concat(a.name, ' by ' , vendor.Name) AS 'Description', vendor.Name as 'Supplier'
 from adventureworks.product a 
 join adventureworks.productsubcategory psub USING (ProductSubcategoryID)
 join adventureworks.productmodel pmodel USING (ProductModelID)
@@ -20,8 +26,19 @@ join adventureworks.productdescription pdescription USING (ProductDescriptionID)
 join adventureworks.productvendor pvendor USING (ProductID)
 join adventureworks.vendor vendor USING (VendorID);
 
+#our_products view
 CREATE OR REPLACE VIEW our_product AS
-SELECT p.name as Name, 'Tech' as Type, c.name as Category, description as Description, s.name as Supplier, cost as Price
+SELECT p.name as 'Name', 'Tech' as 'Type', c.name as 'Category', description as 'Description', cost as 'Prices', s.name as 'Supplier'
 from product p
 join category c USING (category_id)
 join supplier s USING (supplier_id);
+
+#Overall Inventory of ALL items in each database containing our columns of interest
+CREATE OR REPLACE VIEW our_inventory AS
+SELECT * from northwind_product
+UNION
+SELECT * from sakila_product
+UNION
+SELECT * from adventureworks_product
+UNION
+SELECT * from our_product;
