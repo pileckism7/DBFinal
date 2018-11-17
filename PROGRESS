@@ -1,14 +1,20 @@
 1.Ability to view, add, remove and modify your customer information 
+//DONE
 
 2.Ability to view your partners’ customer information
+//DONE
 
 3.Ability to view, add, remove and modify your supplier information.
+//DONE
 
 4.Ability to view, add, remove and modify your product information
+//DONE
 
 5.Ability to view, your partners’ product information
+//DONE
 
 6.Ability to view your product inventory
+//IN PROGRESS
 
 7. Ability to generate a restocking order (should be saved in a ”restocking” table) if the supply of any of your
 products falls below the minimum stock level
