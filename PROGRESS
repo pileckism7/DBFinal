@@ -26,7 +26,7 @@ Remove -> RemoveProduct(product_id)
 Modify -> ModifyProduct(product_id, name, description, amount, min_stock, cost, supplier_id, category_id)
 
 5.Ability to view, your partners’ product information
-// IN PROGRESS
+// DONE
 View -- > sakila_product
 View -- > northwind_product
 View -- > adventureworks_product
