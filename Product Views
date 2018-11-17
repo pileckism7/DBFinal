@@ -10,6 +10,7 @@ SELECT title as Name, 'Movie' as Type, category as Category, description as Desc
 from sakila.film_list;
 
 #adventureworks_product
+CREATE OR REPLACE VIEW adventureworks_product AS
 SELECT a.name as Name, 'Biking' as Type, psub.Name as Category, pdescription.Description, ListPrice as Price, vendor.Name as Supplier, pinv.Quantity
 from adventureworks.product a 
 join adventureworks.productsubcategory psub USING (ProductSubcategoryID)
