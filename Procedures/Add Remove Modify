@@ -1,5 +1,5 @@
 DELIMITER $$
-CREATE DEFINER=`pileckism7`@`%` PROCEDURE `AddCustomer`(fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
+CREATE PROCEDURE `AddCustomer`(fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
 BEGIN
 
 INSERT INTO customer (first_name, last_name, email, username)
@@ -7,11 +7,18 @@ INSERT INTO customer (first_name, last_name, email, username)
 END$$
 DELIMITER ;
 
-CREATE DEFINER=`pileckism7`@`%` PROCEDURE `AddSupplier`(s_name varchar(45))
+CREATE PROCEDURE `AddSupplier`(s_name varchar(45))
 BEGIN
 
 INSERT INTO supplier (name)
  VALUES(s_name);
+END
+
+CREATE PROCEDURE `AddProduct`(p_name varchar(45), description varchar(255), amount int, min_stock int, cost int, sup_id int, cat_id int)
+BEGIN
+
+insert into product(cost, description, supplier_id, amount, name, min_stock, category_id)
+ VALUES(cost, description, sup_id, amount, p_name, min_stock, cat_id);
 END
 
 
@@ -34,9 +41,16 @@ where supplier_id = s_id;
 END$$
 DELIMITER ;
 
+CREATE PROCEDURE `RemoveProduct`(p_id int)
+BEGIN
+DELETE 
+from product
+where product_id = p_id;
+END
+
 
 DELIMITER $$
-CREATE DEFINER=`pileckism7`@`%` PROCEDURE `ModifyCustomer`(c_id int, fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
+CREATE PROCEDURE `ModifyCustomer`(c_id int, fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
 BEGIN
 
 INSERT INTO customer (customer_id, first_name, last_name, email, username)
@@ -50,7 +64,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`pileckism7`@`%` PROCEDURE `ModifySupplier`(s_id int, s_name varchar(45))
+CREATE PROCEDURE `ModifySupplier`(s_id int, s_name varchar(45))
 BEGIN
 
 INSERT INTO supplier (supplier_id, name)
