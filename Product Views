@@ -34,7 +34,7 @@ join category c USING (category_id)
 join supplier s USING (supplier_id);
 
 #Overall Inventory of ALL items in each database containing our columns of interest
-CREATE OR REPLACE VIEW our_inventory AS
+CREATE OR REPLACE VIEW overall_inventory AS
 SELECT * from northwind_product
 UNION
 SELECT * from sakila_product
