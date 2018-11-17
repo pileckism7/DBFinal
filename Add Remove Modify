@@ -1,0 +1,67 @@
+DELIMITER $$
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `AddCustomer`(fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
+BEGIN
+
+INSERT INTO customer (first_name, last_name, email, username)
+ VALUES(fn, ln, eml, un);
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `AddCustomer`(fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
+BEGIN
+
+INSERT INTO customer (first_name, last_name, email, username)
+ VALUES(fn, ln, eml, un);
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `DeleteCustomer`(c_id int)
+BEGIN
+DELETE 
+from customer 
+where customer_id = c_id;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `DeleteSupplier`(s_id int)
+BEGIN
+DELETE 
+from supplier 
+where supplier_id = s_id;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `ModifyCustomer`(c_id int, fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
+BEGIN
+
+INSERT INTO customer (customer_id, first_name, last_name, email, username)
+ VALUES(c_id, fn, ln, eml, un)
+ ON DUPLICATE KEY UPDATE    
+	first_name = fn,
+    last_name = ln,
+    email = eml,
+    username = un;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `ModifySupplier`(s_id int, s_name varchar(45))
+BEGIN
+
+INSERT INTO supplier (supplier_id, name)
+ VALUES(s_id, s_name)
+ ON DUPLICATE KEY UPDATE    
+	name = s_name;
+    
+END$$
+DELIMITER ;
+
+
