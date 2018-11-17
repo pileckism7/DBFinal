@@ -1,0 +1,49 @@
+1.Ability to view, add, remove and modify your customer information 
+
+2.Ability to view your partners’ customer information
+
+3.Ability to view, add, remove and modify your supplier information.
+
+4.Ability to view, add, remove and modify your product information
+
+5.Ability to view, your partners’ product information
+
+6.Ability to view your product inventory
+
+7. Ability to generate a restocking order (should be saved in a ”restocking” table) if the supply of any of your
+products falls below the minimum stock level
+
+8. Ability of a customer to place an order, which consists of adding your or your partners’ items to a shopping cart
+and then checking out.
+
+9.Ability to browse the product catalog by category  (We know that Northwind sells food items, AdventureWorks 
+sells bikes and accessories, and Sakila sells movies.  Your product catalogshould include items fromyour partners’ categories
+as well as items from other categories that your partners do not traffic in.Your application should include the following 
+basicreports (SQL queries)
+
+10.List ofall yourproducts whose inventory has fallen below the minimum stock level
+
+11.List of customers who have not been “too active”(you define this)and for whom special offers should be made.
+
+12.List of products that are not selling “too well”(you define this), which might be offered as specials.
+
+13.When the products purchased will ship (Shipping will occur four weekdays from now, e.g., if today is Monday, they will ship on Friday.
+The above functionality should be implemented using MySQL on elvis.  Additionally, you should create a miniature application in a differentdatabase package of your choice.  That second implementation does not need any insert, update or delete capabilities – but it should include all of the queries to view all of the functionality from 1 to 13 above.
+
+
+Finally, you will need to enhance your MySQL application to include the following advanced functionality:
+
+14.Ability of a customers to place an item on his/her “wish list.”
+15.An algorithm (manifested as a query) to suggest additional products that a customer might be interested in based 
+on their order history, their wish list, or anything else you would like to program.
+16.Ability of customers to rate products 
+
+17.Ability to view the ratings of products in two ways
+  •The average rating based on all rating activity
+  •A more intelligent rating that uses an algorithm to weight some customer’s ratings higher than others.And these additional advancedreports:
+  
+18.A report showing the most highly wished for productsin every category
+
+19.A report showing wished for products that were never purchased by the customers who wished for them
+
+20.EXTRA CREDIT:  What other innovative reports can you think of?
