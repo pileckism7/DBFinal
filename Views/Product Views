@@ -33,6 +33,14 @@ from product p
 join category c USING (category_id)
 join supplier s USING (supplier_id);
 
+#Partners inventory ONLY
+CREATE OR REPLACE VIEW partners_inventory AS
+SELECT * from northwind_product
+UNION
+SELECT * from sakila_product
+UNION
+SELECT * from adventureworks_product;
+
 #Overall Inventory of ALL items in each database containing our columns of interest
 CREATE OR REPLACE VIEW overall_inventory AS
 SELECT * from northwind_product
