@@ -19,3 +19,9 @@ join adventureworks.productmodelproductdescriptionculture pmodelcult USING (Prod
 join adventureworks.productdescription pdescription USING (ProductDescriptionID)
 join adventureworks.productvendor pvendor USING (ProductID)
 join adventureworks.vendor vendor USING (VendorID);
+
+CREATE OR REPLACE VIEW our_product AS
+SELECT p.name as Name, 'Tech' as Type, c.name as Category, description as Description, s.name as Supplier, cost as Price
+from product p
+join category c USING (category_id)
+join supplier s USING (supplier_id);
