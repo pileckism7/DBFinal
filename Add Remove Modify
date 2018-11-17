@@ -9,16 +9,6 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE DEFINER=`pileckism7`@`%` PROCEDURE `AddCustomer`(fn varchar(45), ln varchar(45), eml varchar(45), un varchar(45))
-BEGIN
-
-INSERT INTO customer (first_name, last_name, email, username)
- VALUES(fn, ln, eml, un);
-END$$
-DELIMITER ;
-
-
-DELIMITER $$
 CREATE DEFINER=`pileckism7`@`%` PROCEDURE `DeleteCustomer`(c_id int)
 BEGIN
 DELETE 
