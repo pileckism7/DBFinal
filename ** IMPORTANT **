@@ -1,0 +1,43 @@
+//FOLLOW THE GUIDE TO SET UP JAVA/ECLIPSE/MYSQL configuration
+
+
+
+// CODE TO SET UP THE CONNECTION TO THE DATABASE
+
+
+import java.sql.*;
+
+
+
+
+public class dbDriver {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+    String pass = [PASSWORD];
+    String user = [USERNAME];
+
+		try {
+			
+			//1. Get Connection
+			Connection conn = DriverManager.getConnection("jdbc:mysql://elvis.rowan.edu:3306/[USERNAME]?&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", user, pass);
+			
+			//2.Create  a statement
+			Statement stat = conn.createStatement();
+			
+			//3.Execute SQL query
+			ResultSet result = stat.executeQuery("SELECT * FROM sakila_product");
+			
+			
+			//4. Process the result set.
+			while(result.next()) {
+				System.out.println(result.getString("Name") + " " + result.getString("Type") + " " + result.getString("Description"));
+			}
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
