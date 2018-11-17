@@ -1,0 +1,17 @@
+CREATE PROCEDURE `restock_product` (p_id INT)
+BEGIN
+	DECLARE newValue INT;
+    
+    SELECT min_stock * 2 INTO newValue
+    FROM product
+    WHERE product_id = p_id;
+    
+    UPDATE product
+    SET amount = newValue
+    WHERE product_id = p_id;
+END
+
+CREATE PROCEDURE `populate_restock`(p_id INT(11))
+BEGIN
+    INSERT INTO restock(date, product_id) VALUES (CURRENT_TIMESTAMP, p_id);
+END
