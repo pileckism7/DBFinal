@@ -11,26 +11,26 @@ View -- > admin_their_customers
 
 
 3.Ability to view, add, remove and modify your supplier information.
-//IN PROGRESS
-View -- > ??
-Add  ---> ??
+//DONE
+View -- > our_suppliers
+Add  ---> AddSupplier(name)
 Remove -> DeleteSupplier(supplier_id)
 Modify -> ModifyCustomer(supplier_id, name)
 
 
 4.Ability to view, add, remove and modify your product information
-// IN PROGRESS
+// DONE
 View -- > our_product
-Add  ---> ??
-Remove -> ??
-Modify -> ??
+Add  ---> AddProduct(name, description, amount, min_stock, cost, supplier_id, category_id)
+Remove -> RemoveProduct(product_id)
+Modify -> ModifyProduct(product_id, name, description, amount, min_stock, cost, supplier_id, category_id)
 
 5.Ability to view, your partners’ product information
 // IN PROGRESS
 View -- > sakila_product
 View -- > northwind_product
 View -- > adventureworks_product
-View -- > ?? Combined Partners
+View -- > partners_inventory
 
 6.Ability to view your product inventory
 //DONE
