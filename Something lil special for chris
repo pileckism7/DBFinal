@@ -1,0 +1,5 @@
+select concat (co.country, ', ' ,c.city) AS 'Supplier'
+from sakila.store s
+JOIN sakila.address a USING (address_id)
+join sakila.city c USING (city_id)
+join sakila.country co USING (country_id);
