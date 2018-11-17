@@ -2,7 +2,7 @@ CREATE PROCEDURE `restock_product` (p_id INT)
 BEGIN
 	DECLARE newValue INT;
     
-    SELECT min_stock * 2 INTO newValue
+    SELECT min_stock + amount INTO newValue
     FROM product
     WHERE product_id = p_id;
     
