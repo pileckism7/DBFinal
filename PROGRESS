@@ -38,20 +38,30 @@ View -- > overall_inventory
 
 7. Ability to generate a restocking order (should be saved in a ”restocking” table) if the supply of any of your
 products falls below the minimum stock level
+// PROCEDURES SET UP
+// After Order is placed, need to set up procedures to check if the
+    IF >> Stock Amount is Less than min_stock >> Callrestock_product(product_id) and populate_restock(product_id)
 
 8. Ability of a customer to place an order, which consists of adding your or your partners’ items to a shopping cart
 and then checking out.
+// NEED PROCEDURE >> place_order
+// Procedure should log the information about the order, and put it in orders table.
 
 9.Ability to browse the product catalog by category  (We know that Northwind sells food items, AdventureWorks 
 sells bikes and accessories, and Sakila sells movies.  Your product catalogshould include items fromyour partners’ categories
 as well as items from other categories that your partners do not traffic in.Your application should include the following 
 basicreports (SQL queries)
 
-10.List ofall yourproducts whose inventory has fallen below the minimum stock level
+10.List of all your products whose inventory has fallen below the minimum stock level
+//RETRIEVE the data from restock table, List By Name of the product and some other fields.
 
 11.List of customers who have not been “too active”(you define this)and for whom special offers should be made.
+//Extract the users who are not in the order table, as well as the users who have not made a purchase for at least 30 days.
+// Return the name and their email.
 
 12.List of products that are not selling “too well”(you define this), which might be offered as specials.
+//Extract the products which are not in the order table as well as the products which have not been sold in over 30 days.
+//Return RANDOM 5 items
 
 13.When the products purchased will ship (Shipping will occur four weekdays from now, e.g., if today is Monday, they will ship on Friday.
 The above functionality should be implemented using MySQL on elvis.  Additionally, you should create a miniature application in a differentdatabase package of your choice.  That second implementation does not need any insert, update or delete capabilities – but it should include all of the queries to view all of the functionality from 1 to 13 above.
