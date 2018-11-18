@@ -1,7 +1,7 @@
 # Admin view of our customers
 CREATE OR REPLACE VIEW admin_our_customers AS
 SELECT
-    username,
+    customer_id AS customerID, username,
 	CONCAT(first_name, ' ', last_name) AS name,
     email
 FROM customer;
