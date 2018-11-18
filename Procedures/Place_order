@@ -1,0 +1,30 @@
+CREATE DEFINER=`pileckism7`@`%` PROCEDURE `place_order`(amnt int, c_id int, p_id int)
+BEGIN
+	DECLARE remainStock INT;
+	DECLARE minStock INT;
+	IF((SELECT amount from product WHERE product_id = p_id) > amnt) THEN
+		BEGIN
+			SELECT (amount - amnt) INTO remainStock
+			FROM product
+			WHERE product_id = p_id;
+			SELECT min_stock INTO minStock
+			FROM product
+			WHERE product_id = p_id;
+
+			IF(remainStock < minStock) THEN
+				CALL restock_product(p_id);
+				CALL populate_restock(p_id);
+				UPDATE product
+				SET amount = remainStock + minStock
+				WHERE product_id = p_id;
+			ELSE 
+				UPDATE product
+				SET amount = amount - amnt
+				WHERE product_id = p_id;
+			END IF;
+    
+			insert into pileckism7.order(date, amount, customer_id, product_id,status)
+			VALUES(current_date(), amnt, c_id, p_id, 'Processed');
+		END;
+    END IF;
+END
