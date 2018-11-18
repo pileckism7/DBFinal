@@ -73,6 +73,8 @@ Finally, you will need to enhance your MySQL application to include the followin
 15.An algorithm (manifested as a query) to suggest additional products that a customer might be interested in based 
 on their order history, their wish list, or anything else you would like to program.
 16.Ability of customers to rate products 
+//Done
+//Run by inputting product_id, score, customer_id, description --> Adds a rating to the product_rating table
 
 17.Ability to view the ratings of products in two ways
   •The average rating based on all rating activity
