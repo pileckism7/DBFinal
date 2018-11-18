@@ -81,11 +81,15 @@ Finally, you will need to enhance your MySQL application to include the followin
 15.An algorithm (manifested as a query) to suggest additional products that a customer might be interested in based 
 on their order history, their wish list, or anything else you would like to program.
 16.Ability of customers to rate products 
-
+  //IDEA: Simple SQL proceudre that allows any customer to rate any product --> In JAVA FE, SELECT all order's customers and 
+  //products into a list --> When a customer's name, user, or email is entered into a box, check on that list of order's customers.
+  //If customer is not in the list, do not run procedure. If customer in the list, run procedure only if customer order product_id
+  //matches the product_id entered in the JAVA FE (hash, or parallel arrays?)
 17.Ability to view the ratings of products in two ways
   •The average rating based on all rating activity
+  //IDEA: just take average score
   •A more intelligent rating that uses an algorithm to weight some customer’s ratings higher than others.And these additional advancedreports:
-  
+  //IDEA: items with them most orders > items with the best average rating > items with large descriptions
 18.A report showing the most highly wished for productsin every category
 
 19.A report showing wished for products that were never purchased by the customers who wished for them
