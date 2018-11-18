@@ -80,6 +80,7 @@ Finally, you will need to enhance your MySQL application to include the followin
 14.Ability of a customers to place an item on his/her “wish list.”
 15.An algorithm (manifested as a query) to suggest additional products that a customer might be interested in based 
 on their order history, their wish list, or anything else you would like to program.
+//14, 15 done
 16.Ability of customers to rate products 
   //IDEA: Simple SQL proceudre that allows any customer to rate any product --> In JAVA FE, SELECT all order's customers and 
   //products into a list --> When a customer's name, user, or email is entered into a box, check on that list of order's customers.
