@@ -1,0 +1,5 @@
+CREATE OR REPLACE VIEW notActive AS
+SELECT name AS 'Name', email AS 'Email'
+from all_customers
+WHERE customerID NOT IN (SELECT customer_id FROM pileckism7.order)
+AND customerID NOT IN (SELECT o.customer_id FROM pileckism7.order o WHERE  o.date <= o.date - INTERVAL 1 MONTH);
