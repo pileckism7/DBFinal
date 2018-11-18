@@ -1,0 +1,5 @@
+CREATE DEFINER=`pricem2`@`%` PROCEDURE `add_to_wish_list`(c_id INT, p_id INT)
+BEGIN
+	INSERT INTO customer_wish(customer_id, product_id) 
+    VALUES	(c_id, p_id);
+END
