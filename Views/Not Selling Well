@@ -1,0 +1,5 @@
+CREATE OR REPLACE VIEW not_selling_well AS
+SELECT *
+from our_product
+WHERE product_id NOT IN (SELECT product_id FROM pileckism7.order)
+AND product_id NOT IN (SELECT o.product_id FROM pileckism7.order o WHERE  o.date <= o.date - INTERVAL 1 MONTH);
