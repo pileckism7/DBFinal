@@ -1,0 +1,26 @@
+Steps to setup Eclipse/JavaFX/SQL Environment
+
+1) Download JDK from Oracle (will contain FX): https://www.oracle.com/technetwork/java/javase/downloads/index.html
+2) Download SceneBuilder from Gluon: https://gluonhq.com/products/scene-builder/#download
+3) Start a new JavaFX project
+4) Delete any package that may have been created with the initialization of a new project
+5) Create a new package called "db_final"
+6) Create a new Class called Main.java in the "db_final" package
+7) Download JDBC driver from MySQL: https://www.mysql.com/products/connector/
+	7a) The file you want: 'JDBC Driver for MySQL (Connector/J)'
+	7b) Select 'Platform Independent' for the OS 
+	7c) Download the zip
+	7d) Unzip the folder
+	7e) Go to Eclipse and right click your project and select properties
+	7f) Go to the libraries tab
+	7g) Select add an external JAR 
+	7h) Go to the location of the JDBC driver, mine looked like this: C:\Users\Christopher\Downloads\mysql-connector-java-8.0.13\mysql-connector-java-8.0.13 - in this folder you should find the 'mysql-connector-java-8.0.13' JAR file. Add this to the library
+8) Copy and paste Main.java code from GitHub to Eclipse
+9) Create another package called db_final.view which will be a sub-package of db_final
+10) Create a fxml file called MainView.fxml inside the db_final.view package
+11) Make sure that the fxml file opens with SceneBuilder 8 or 10 (whichever you downloaded from Gluon) - if it doesn't, watch this video: https://www.youtube.com/watch?v=sBQpA42CJNM
+	11a) Create some buttons or other panes on the MainView Scene
+12) Make sure that the correct version of SceneBuilder opens when opening the .fxml file
+13) VPN into Rowan's network via Cisco AnyConnect or VPN client of your choice
+14) in Main.java, replace the connection string with your user information
+15) Run Main.java - if all works well then you should see the Scene you created pop up and also see some information from your database appear in the eclipse console
