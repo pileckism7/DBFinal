@@ -1,0 +1,40 @@
+CREATE DEFINER=`pricem2`@`%` PROCEDURE `suggest_additional_products`(c_id INT)
+BEGIN
+	SELECT product.name AS products_of_interest
+	FROM pricem2.customer
+	JOIN cart ON customer.customer_id = cart.customer_id
+	JOIN pricem2.order ON cart.customer_id = pricem2.order.customer_id
+	JOIN product ON pricem2.order.product_id = product.product_id
+    WHERE product.category_id IN
+		(
+				SELECT product.category_id
+				FROM customer
+				JOIN cart ON customer.customer_id = cart.customer_id
+				JOIN pricem2.order ON cart.customer_id = pricem2.order.customer_id
+				JOIN product ON pricem2.order.product_id = product.product_id
+				WHERE customer.customer_id = c_id
+		)
+	OR product.category_id IN
+		(
+			SELECT product.category_id
+			FROM customer
+			JOIN customer_wish ON customer.customer_id = customer_wish.customer_id
+            JOIN product ON customer_wish.product_id = product.product_id
+			WHERE customer.customer_id = c_id
+		)
+	AND NOT product.product_id IN
+		(
+			SELECT pricem2.order.product_id
+            FROM customer
+			JOIN cart ON customer.customer_id = cart.customer_id
+			JOIN pricem2.order ON cart.customer_id = pricem2.order.customer_id
+            WHERE customer.customer_id = c_id
+		)
+	AND NOT product.product_id IN
+		(
+			SELECT customer_wish.product_id
+            FROM customer
+            JOIN customer_wish ON customer.customer_id = customer_wish.customer_id
+            WHERE customer.customer_id = c_id
+		);
+END
