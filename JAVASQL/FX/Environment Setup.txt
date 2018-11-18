@@ -23,4 +23,4 @@ Steps to setup Eclipse/JavaFX/SQL Environment
 12) Make sure that the correct version of SceneBuilder opens when opening the .fxml file
 13) VPN into Rowan's network via Cisco AnyConnect or VPN client of your choice
 14) in Main.java, replace the connection string with your user information
-15) Run Main.java - if all works well then you should see the Scene you created pop up and also see some information from your database appear in the eclipse console
+15) Run Main.java - if all works well then you should see the Scene you created pop up and also see some information from your database appear in the eclipse console (see PNG)
