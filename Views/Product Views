@@ -28,7 +28,7 @@ join adventureworks.vendor vendor USING (VendorID);
 
 #our_products view
 CREATE OR REPLACE VIEW our_product AS
-SELECT p.name as 'Name', 'Tech' as 'Type', c.name as 'Category', description as 'Description', cost as 'Prices', s.name as 'Supplier'
+SELECT p.product_id, p.name as 'Name', 'Tech' as 'Type', c.name as 'Category', description as 'Description', cost as 'Prices', s.name as 'Supplier'
 from product p
 join category c USING (category_id)
 join supplier s USING (supplier_id);
