@@ -1,0 +1,9 @@
+DELIMITER $$
+CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `RateProduct`(p_id int, r int, c_id int, d varchar(45))
+BEGIN
+
+INSERT INTO product_rating (product_id, score, customer_id, description)
+ VALUES(p_id, r, c_id, d);
+END$$
+DELIMITER ;
+SELECT * FROM malitskyc5.product_rating;
