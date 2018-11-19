@@ -1,0 +1,212 @@
+CREATE TABLE lakes
+(
+    lake_name VARCHAR(45) PRIMARY KEY,
+    shape SDO_GEOMETRY NOT NULL
+);
+
+--Permiter of Lower Lake, excluding Island
+--Permiter goes counterclockwise
+INSERT INTO lakes VALUES
+(
+    'Lower Medford Lake',
+    SDO_GEOMETRY
+    (
+        2003,
+        NULL,
+        NULL,
+        SDO_ELEM_INFO_ARRAY(1, 1003, 1),
+        SDO_ORDINATE_ARRAY(67,36,68,36,69,37,70,37,71,38,73,37,73,36,72,35, 
+            73,33,75,33,76,31,75,30,76,27,78,26,78,25,79,23,82,22,84,20,
+            85,19,87,19,87,25,86,26,88,27,94,26,94,25,95,23,96,22,98,23,
+            96,22,98,23,97,24,97,27,98,30,97,30,96,29,96,26,92,29,91,29,
+            90,31,88,30,87,29,86,29,85,30,82,27,78,30,78,34,76,36,77,38,
+            75,41,75,42,74,41,73,42,72,44,72,45,70,44,69,44,66,44,65,42,
+            66,41,67,40,68,37,67,36) 
+    )
+);
+
+--Island of lower medford lake
+--ord array goes clockwise
+INSERT INTO lakes VALUES
+(
+    'lower lake island',
+    SDO_GEOMETRY
+    (
+        2003,
+        NULL,
+        NULL,
+        SDO_ELEM_INFO_ARRAY(1, 2003, 1),
+        SDO_ORDINATE_ARRAY(84,26, 85,27, 86,28, 84,26)
+    )
+);
+
+INSERT INTO lakes VALUES
+(
+    'Uppper Meford Lake',
+    SDO_GEOMETRY
+    (
+        2003,
+        NULL,
+        NULL,
+        SDO_ELEM_INFO_ARRAY(1, 1003, 1),
+        SDO_ORDINATE_ARRAY(48,68,56,61,54,57,53,57,55,54,59,52,60,50,61,49,
+            61,48,63,44,62,43,60,42,60,41,60,40,63,43,65,43,65,44,64,47,
+            63,48,64,51,64,52,64,53,60,54,60,55,59,57,59,55,59,57,53,62,
+            51,69,51,71,54,70,54,71,53,72,52,72,51,72,48,74,47,72,48,68)
+    )
+);
+
+--Table for all the points of interest around medford
+CREATE TABLE places_of_interest
+(
+    place_name VARCHAR(45) PRIMARY KEY,
+    place_location SDO_GEOMETRY NOT NULL
+);
+
+--Zinc Cafe
+INSERT INTO places_of_interest VALUES
+(
+    'Zinc Cafe',
+    SDO_GEOMETRY
+    (
+        2001,
+        NULL,
+        SDO_POINT_TYPE(26,99, NULL),
+        NULL,
+        NULL
+    )
+);
+
+--PJ W
+INSERT INTO places_of_interest VALUES
+(
+    'P.J. Whelihans',
+    SDO_GEOMETRY
+    (
+        2001,
+        NULL,
+        SDO_POINT_TYPE(40,74, NULL),
+        NULL,
+        NULL
+    )
+);
+
+--YMCA
+INSERT INTO places_of_interest VALUES
+(
+    'Y.M.C.A',
+    SDO_GEOMETRY
+    (
+        2001,
+        NULL,
+        SDO_POINT_TYPE(79,8, NULL),
+        NULL,
+        NULL
+    )
+);
+
+--Country CLub
+INSERT INTO places_of_interest VALUES
+(
+    'Medford Lakes Country Club',
+    SDO_GEOMETRY
+    (
+        2001,
+        NULL,
+        SDO_POINT_TYPE(85,61, NULL),
+        NULL,
+        NULL
+    )
+);
+
+--UPDATES THE META DATA VIEW
+INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
+VALUES
+    (
+        'lakes',
+        'shape',
+        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 100, 0.005), 
+            SDO_DIM_ELEMENT('Y', 0, 100, 0.005)),
+        NULL
+    );
+    
+INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
+VALUES
+    (
+        'places_of_interest',
+        'place_location',
+        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 100, 0.005),
+            SDO_DIM_ELEMENT('Y', 0, 100, 0.005)),
+        NULL
+    );
+    
+--create the spaical index
+CREATE INDEX lakes_spatial_index ON lakes(shape)
+    INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+    
+--PROCEDURE WALKING
+CREATE OR REPLACE PROCEDURE take_a_walk
+    (start_x INTEGER, start_y INTEGER, end_x INTEGER, end_y INTEGER)
+AS
+    DECLARE
+        curr_x := start_x;
+        curr_y := start_y;
+        
+        --calculate slope based on start and end x
+        slope := DIV((end_y - start_y), (end_x - start_x));
+        slope_sum := slope
+    BEGIN
+        --prints out starting location
+        dbms_output.put_line("Starting at: " || curr_x || " " || curr_y);
+        LOOP
+            --depending on slope, either move more horizontal or vertical
+            IF slope > 1 THEN
+                -- move vertical up NORTH
+                LOOP
+                    IF curr_y = end_y OR slope_sum < 1 THEN
+                        slope_sum := slope;
+                        curr_x := curr_x + 1;
+                        EXIT;
+                    END IF;
+                    slope_sum := slope_sum -= 1;
+                    curr_y := curr_y + 1;
+                    
+                    --prints out location
+                    CALL print_location(curr_x, curr_y);
+                END LOOP;
+                
+            -- move horizontal right EAST
+            ELSE IF slope < 1 AND slope > 0 THEN
+            
+            END IF;
+        END LOOP;
+        dbms_output.put_line("Ending at: " || curr_x || " " || curr_y);
+END
+
+--prints out the location based upon the x and y values
+CREATE OR REPLACE PROCEDURE print_location(curr_x INT, curr_y INT)
+AS
+    DECLARE curr_lake AS VARCHAR(45);
+    BEGIN
+        SELECT l.name INTO curr_lake
+        FROM lakes l
+        WHERE SDO_RELATE(
+            SDO_GEOMETRY
+            (
+                2001,
+                NULL,
+                SDO_POINT_TYPE(curr_x, curr_y, NULL),
+                NULL,
+                NULL
+            ), 
+            l.shape,
+            'mask = INSIDE' ) = 'TRUE';
+        
+        --IF curr_lake does not equal null, then you are in a lake
+        IF NULL(curr_lake) THEN
+            dbms_output.put_line("IN: " || curr_lake);
+        ELSE
+            dbms_output.put_line("ON land");
+        END IF;
+END
+    
