@@ -1,0 +1,261 @@
+
+/**
+ * Graduate DataBases Final Project GUI
+ * Professor Myers
+ * 
+ * @author martinprice
+ * @author Mantas P
+ * @author Chris Malitsky
+ * @version November 18, 2018
+ */
+
+import java.util.ArrayList;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import javax.swing.*;
+public class GUI extends JFrame
+{
+	/** Instance Fields for GUI*/
+	private JButton addToCart;
+	private JButton addToWishList;
+	private JButton saveCart;
+	private JButton placeOrder;
+	private JButton adminTools;
+	private JButton search;
+	
+	private JPanel inventory;
+	private JPanel inventoryButtons;
+	private JPanel admin;
+	private JPanel cart;
+	private JPanel cartButtons;
+	private JPanel wishList;
+	private JPanel options;
+	private JPanel userSelect;
+	
+	private JList products;
+	private JList shoppingCart;
+	
+	private JComboBox users;
+	private JComboBox dataBases;
+	
+	private JMenuBar menu;
+	
+	private final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+	
+	/** Instance fields for Variables */
+	private String currentUser;
+	private String currentDataBase;
+	private String currentCategory;
+	
+	/** Constructor */
+	public GUI()
+	{
+		super("Daymnzon.com");
+		createGUI();
+	}
+	
+	/** Calls all the methods which create the individual components */
+	private void createGUI()
+	{
+		setSize(1000, 900);
+		super.
+		setLayout(null);
+		
+		buildMenuBar();
+		buildUsers();
+		buildInventory();
+		buildCart();
+		buildWishList();
+		buildAdmin();
+		buildOptions();
+		
+		setVisible(true);
+	}
+	
+	/** 
+	 * Builds the menu bar
+	 * Menu Bar contains:
+	 * 	file > quit
+	 */
+	private void buildMenuBar()
+	{
+		menu = new JMenuBar();
+		setJMenuBar(menu);
+		
+		//file
+		JMenu file = new JMenu("File");
+		menu.add(file);
+		JMenuItem quit = new JMenuItem("Quit");
+		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, SHORTCUT_MASK));
+		quit.addActionListener(e -> System.exit(0));
+		file.add(quit);
+	}
+	
+	/**
+	 * Builds the users panel
+	 */
+	private void buildUsers()
+	{
+		userSelect = new JPanel();
+		userSelect.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		userSelect.setLayout(new BorderLayout());
+		userSelect.setBounds(750, 0, 250, 50);
+		
+		//new combo box
+		users = new JComboBox(populateUsers());
+		userSelect.add(users, BorderLayout.CENTER);
+		
+		add(userSelect);
+	}
+	
+	/**
+	 * Runs a query to add users to the GUI
+	 * 
+	 * @return new String[] of users
+	 * @version 1: no query, hard coded names
+	 */
+	private String[] populateUsers()
+	{
+		return new String[] {"Martin", "Chris", "Mantas", "Mia K"};
+	}
+	
+	/**
+	 * Builds the product view inventory,
+	 * Contains the two buttons down below
+	 */
+	private void buildInventory()
+	{
+		inventory = new JPanel();
+		inventory.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		inventory.setBounds(0,250,700,500);
+		inventory.setLayout(new BorderLayout());
+		
+		inventoryButtons = new JPanel();
+		inventoryButtons.setPreferredSize(new Dimension(700, 100));
+		inventoryButtons.setLayout(null);
+		inventoryButtons.setBackground(Color.GRAY);
+		
+		addToCart = new JButton("Add to Cart");
+		addToCart.setBounds(450,25, 100, 50);
+		addToCart.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		inventoryButtons.add(addToCart);
+		
+		addToWishList = new JButton("Add To Wish List");
+		addToWishList.setBounds(150, 25, 100, 50);
+		addToWishList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		inventoryButtons.add(addToWishList);
+		
+		products = new JList(populateProducts());
+		products.setPreferredSize(new Dimension(400, 700));
+		
+		inventory.add(products, BorderLayout.CENTER);
+		inventory.add(inventoryButtons, BorderLayout.SOUTH);
+		add(inventory);
+	}
+	
+	/**
+	 * Runs a query to initially populate the inventory
+	 * 
+	 * @ return new String[] of products
+	 * @ version 1: no query, hard coded items
+	 */
+	private String[] populateProducts()
+	{
+		return new String[] {"Pen", "Bike", "Computer"};
+	}
+	
+	/**
+	 * Builds the cart
+	 */
+	private void buildCart()
+	{
+		cart = new JPanel();
+		cart.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		cart.setBounds(750, 250, 250, 500);
+		cart.setLayout(new BorderLayout());
+		
+		cartButtons = new JPanel();
+		cartButtons.setBackground(Color.CYAN);
+		cartButtons.setPreferredSize(new Dimension(250, 100));
+		cartButtons.setLayout(null);
+		
+		saveCart = new JButton("Save Cart");
+		saveCart.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		saveCart.setBounds(50, 15, 150, 30);
+		
+		placeOrder = new JButton("Order");
+		placeOrder.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		placeOrder.setBounds(25, 50, 200, 40);
+		
+		cartButtons.add(saveCart);
+		cartButtons.add(placeOrder);
+		
+		shoppingCart = new JList(new String[] {"Shopping List"});
+		shoppingCart.setPreferredSize(new Dimension(250, 550));
+		
+		cart.add(cartButtons, BorderLayout.SOUTH);
+		cart.add(shoppingCart, BorderLayout.CENTER);
+		
+		add(cart);
+	}
+	
+	/**
+	 * Builds the wishlist
+	 */
+	private void buildWishList()
+	{
+		wishList = new JPanel();
+		wishList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		wishList.setBounds(0, 800, 700, 200);
+		
+		add(wishList);
+	}
+	
+	/**
+	 * Builds the admin panel
+	 * Panel contains:
+	 * 	> admin button
+	 * 	> advertisement
+	 */
+	private void buildAdmin()
+	{
+		admin = new JPanel();
+		admin.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		admin.setBounds(700, 750, 300, 250);
+		admin.setLayout(null);
+		
+		adminTools = new JButton("Admin Access");
+		adminTools.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		adminTools.setBounds(50, 150, 200, 50);
+		
+		admin.add(adminTools, BorderLayout.SOUTH);
+		
+		add(admin);
+	}
+	
+	/**
+	 * Builds the options bar
+	 * Bar contains:
+	 * 	> databases
+	 * 	> search btn
+	 */
+	private void buildOptions()
+	{
+		options = new JPanel();
+		options.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		options.setBounds(0, 50, 700, 150);
+		options.setLayout(new FlowLayout());
+		
+		dataBases = new JComboBox(new String[] {"Daymnzon", "Adventureworks", "Northwind", "Sakila", "ALL"});
+		
+		search = new JButton("Search");
+		search.setPreferredSize(new Dimension(50,25));
+		search.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
+		options.add(dataBases);
+		options.add(search);
+		
+		add(options);
+	}
+}
