@@ -1,3 +1,24 @@
+/*
+Thinking about maybe creating a person (point) and inserting it into the table - if you check
+print_location(), it will not run since the 'interface is not supported without a spatial index'. I have made a person
+table in hopes of solving this issue since spatial indexes can only be created on columns of tables
+take_a_walk() is utilizing a really simple approach - we can implement the slope approach if you guys want but
+I don't think it is necessary. take_a_walk() works, gets you from point A to point B by utilizing diagonals until it can either
+move straight vetically or straight horizontally. 
+
+Possible solutions:
+1.) Figuring out how to add a geospatial index to a local point which is created everytime print_location(curr_x, curr_y) is run using the
+current_x and current_y, then seeing if it is inside of a pond or not
+2.) Creating a person point upon take_a_walk, inserting that point into the Person table and somehow manipulating the coordinates of that person point (having to keep
+add person points into person table? Might not be best... Still wondering)
+3.) Inserting a new point upon print_location that creates a new point via current_x, current_y and seeing if that point is inside of a pond
+or not 
+
+Still thinking about these options.
+*/
+
+SET SERVEROUTPUT ON;
+
 CREATE TABLE lakes
 (
     lake_name VARCHAR(45) PRIMARY KEY,
@@ -119,9 +140,48 @@ INSERT INTO places_of_interest VALUES
     )
 );
 
+--Person that will walk around
+CREATE TABLE PERSON(
+    "PERSON_NAME" VARCHAR(20 BYTE) PRIMARY KEY,
+    location SDO_GEOMETRY
+);
+
+INSERT INTO PERSON VALUES(
+    'P1',
+    SDO_GEOMETRY(
+        2001,
+        NULL, 
+        SDO_POINT_TYPE(100,100,NULL),
+        NULL,
+        NULL
+    )
+);
+
+INSERT INTO user_sdo_geom_metadata
+    (   TABLE_NAME,
+        COLUMN_NAME,
+        DIMINFO,
+        SRID)
+    VALUES
+    (
+        'person',
+        'location',
+        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 100, 0.005),
+            SDO_DIM_ELEMENT('Y', 0, 100, 0.005)),
+    NULL
+);
+
+CREATE INDEX person_spatial_index
+    ON PERSON(location)
+    INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+
 --UPDATES THE META DATA VIEW
 INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
-VALUES
+    (   TABLE_NAME,
+        COLUMN_NAME,
+        DIMINFO,
+        SRID)
+    VALUES
     (
         'lakes',
         'shape',
@@ -131,7 +191,11 @@ VALUES
     );
     
 INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
-VALUES
+    (   TABLE_NAME,
+        COLUMN_NAME,
+        DIMINFO,
+        SRID)
+    VALUES
     (
         'places_of_interest',
         'place_location',
@@ -140,73 +204,103 @@ VALUES
         NULL
     );
     
---create the spaical index
+--create the spacial index for the lakes
 CREATE INDEX lakes_spatial_index ON lakes(shape)
     INDEXTYPE IS MDSYS.SPATIAL_INDEX;
     
+--create the spacial index for the places of interest
+CREATE INDEX places_spatial_index ON places_of_interest(place_location)
+    INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+    
 --PROCEDURE WALKING
-CREATE OR REPLACE PROCEDURE take_a_walk
+create or replace PROCEDURE take_a_walk
     (start_x INTEGER, start_y INTEGER, end_x INTEGER, end_y INTEGER)
-AS
-    DECLARE
+IS
+    curr_x INTEGER;
+    curr_y INTEGER;
+    slope_sum INTEGER;
+    slope INTEGER;
+    BEGIN
+        
         curr_x := start_x;
         curr_y := start_y;
-        
+
+        --prints out starting location        
+        dbms_output.put_line('Starting at: ' || curr_x || ' ' || curr_y);
+
         --calculate slope based on start and end x
-        slope := DIV((end_y - start_y), (end_x - start_x));
-        slope_sum := slope
-    BEGIN
-        --prints out starting location
-        dbms_output.put_line("Starting at: " || curr_x || " " || curr_y);
+        slope := (end_y - start_y) / (end_x - start_x);
+        slope_sum := slope;
+
+        --Slope Method in Progress...
+        WHILE (NOT((curr_x = end_x) AND (curr_y = end_y)))
         LOOP
             --depending on slope, either move more horizontal or vertical
-            IF slope > 1 THEN
+            --IF (slope > ) THEN
                 -- move vertical up NORTH
-                LOOP
-                    IF curr_y = end_y OR slope_sum < 1 THEN
+              --  LOOP
+                    IF (curr_x != end_x) THEN
+                        IF (curr_x < end_x) THEN
+                            curr_x := curr_x + 1;
+                        ELSE
+                            curr_x := curr_x -1;
+                        END IF;
+                    END IF;
+                    IF (curr_y != end_y) THEN
+                        IF(curr_y < end_y) THEN
+                            curr_y := curr_y + 1;
+                        ELSE
+                            curr_y := curr_y - 1;
+                        END IF;
+                    END IF;
+
+                    --print_location(curr_x, curr_y);
+                   
+                    /*IF (curr_y = end_y OR slope_sum < 1) THEN
                         slope_sum := slope;
                         curr_x := curr_x + 1;
                         EXIT;
                     END IF;
-                    slope_sum := slope_sum -= 1;
+                    slope_sum := slope_sum - 1;
                     curr_y := curr_y + 1;
-                    
+
                     --prints out location
-                    CALL print_location(curr_x, curr_y);
-                END LOOP;
-                
+                    print_location(curr_x, curr_y);*/
+                --END LOOP;
+
             -- move horizontal right EAST
-            ELSE IF slope < 1 AND slope > 0 THEN
-            
-            END IF;
+            /*ELSE IF slope < 1 AND slope > 0 THEN
+                LOOP
+                    IF curr_x = end_x OR slope_sum > 1 THEN
+                        slope_sum := slope;*/
+            --END IF;
         END LOOP;
-        dbms_output.put_line("Ending at: " || curr_x || " " || curr_y);
-END
+        dbms_output.put_line('Ending at: ' || curr_x || ' ' || curr_y);
+END;
+/
 
 --prints out the location based upon the x and y values
-CREATE OR REPLACE PROCEDURE print_location(curr_x INT, curr_y INT)
-AS
-    DECLARE curr_lake AS VARCHAR(45);
+create or replace PROCEDURE print_location(current_x INT, current_y INT)
+IS
+    curr_lake VARCHAR(45);
     BEGIN
-        SELECT l.name INTO curr_lake
+        SELECT l.lake_name INTO curr_lake
         FROM lakes l
-        WHERE SDO_RELATE(
-            SDO_GEOMETRY
+        WHERE SDO_INSIDE(
+            SDO_GEOMETRY 
             (
                 2001,
                 NULL,
-                SDO_POINT_TYPE(curr_x, curr_y, NULL),
+                SDO_POINT_TYPE(current_x, current_y, NULL),
                 NULL,
                 NULL
             ), 
-            l.shape,
-            'mask = INSIDE' ) = 'TRUE';
-        
+            l.shape) = 'TRUE';
         --IF curr_lake does not equal null, then you are in a lake
-        IF NULL(curr_lake) THEN
-            dbms_output.put_line("IN: " || curr_lake);
+        IF (curr_lake is NOT NULL) THEN
+            dbms_output.put_line('IN: ' || curr_lake);
         ELSE
-            dbms_output.put_line("ON land");
+            dbms_output.put_line('ON land');
         END IF;
-END
-    
+END;
+/
