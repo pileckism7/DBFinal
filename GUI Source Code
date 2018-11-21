@@ -1,4 +1,5 @@
 
+
 /**
  * Graduate DataBases Final Project GUI
  * Professor Myers
@@ -11,11 +12,19 @@
 
 import java.util.ArrayList;
 
+import java.sql.*;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
 public class GUI extends JFrame
 {
+	/** Instance Fields for SQL connection */
+	private String username;
+	private Connection conn;
+	private Statement query;
+	private ResultSet result;
+	
 	/** Instance Fields for GUI*/
 	private JButton addToCart;
 	private JButton addToWishList;
@@ -61,12 +70,38 @@ public class GUI extends JFrame
 	/** Instance fields for Variables */
 	private int searchQueryReturn;
 	private int currentPageNumber;
+	private int MAX_PAGES;
 	
-	/** Constructor */
-	public GUI()
+	/** Constructor 
+	 * @throws SQLException */
+	public GUI(String un, String pw)
 	{
 		super("Daymnzon.com");
 		createGUI();
+		username = un;
+		if(setUpConnection(un, pw))
+			System.out.println("CONNECTION ESTABLSIHED");
+		else
+			System.err.println("COULD NOT CONNECT TO THE DATABASE");
+	}
+	
+	/**
+	 * Initializes SQL variables and connects to the data base
+	 *
+	 * @param un : user name
+	 * @param pw : password
+	 * @return true, no issues
+	 * @throws SQLException 
+	 */
+	private boolean setUpConnection(String un, String pw)
+	{
+		try 
+		{
+			conn = DriverManager.getConnection("jdbc:mysql://elvis.rowan.edu:3306/pricem2?&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", un, pw);
+			query = conn.createStatement();
+			return true;
+		}
+		catch(SQLException e) {e.printStackTrace(); return false;}
 	}
 	
 	/** Calls all the methods which create the individual components */
@@ -116,7 +151,8 @@ public class GUI extends JFrame
 		userSelect.setBounds(750, 0, 250, 50);
 		
 		//new combo box
-		users = new JComboBox(populateUsers());
+		try { users = new JComboBox(populateUsers(new DefaultComboBoxModel())); }
+		catch(SQLException e) {}
 		users.addActionListener(a -> changeCurrentUser((String)users.getSelectedItem()));
 		userSelect.add(users, BorderLayout.CENTER);
 		
@@ -139,10 +175,15 @@ public class GUI extends JFrame
 	 * 
 	 * @return new String[] of users
 	 * @version 1: no query, hard coded names
+	 * @throws SQLException 
 	 */
-	private String[] populateUsers()
+	private DefaultComboBoxModel populateUsers(DefaultComboBoxModel usersQuery) throws SQLException
 	{
-		return new String[] {"Martin", "Chris", "Mantas", "Mia K"};
+		usersQuery.removeAllElements();
+		result = query.executeQuery(String.format("SELECT first_name, last_name FROM %s.customer", username));
+		while(result.next())
+			usersQuery.addElement(String.format("%s %s", result.getString("first_name"), result.getString("last_name")));
+		return usersQuery;
 	}
 	
 	/**
@@ -315,6 +356,7 @@ public class GUI extends JFrame
 		
 		JPanel ratingPanel = new JPanel();
 		ratingPanel.setBackground(Color.LIGHT_GRAY);
+		ratingPanel.setPreferredSize(new Dimension(400, 100));
 		
 		wishList.add(userWishListOptions,BorderLayout.CENTER);
 		wishList.add(ratingPanel, BorderLayout.EAST);
@@ -379,8 +421,9 @@ public class GUI extends JFrame
 		search.setBounds(300,75, 100, 25);
 		search.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		search.setEnabled(true);
-		search.addActionListener(s -> search((String)filterSearch.getSelectedItem(),
-					(String)filterSubSearch.getSelectedItem(), priceRange.getValue()));
+		search.addActionListener(s -> { 
+			try { search((String)filterSearch.getSelectedItem(), (String)filterSubSearch.getSelectedItem(), priceRange.getValue()); } 
+			catch (SQLException e) { e.printStackTrace(); } });
 		
 		JLabel f = new JLabel("Filter By");
 		f.setBounds(0,10, 150,25);
@@ -445,17 +488,29 @@ public class GUI extends JFrame
 	 * 
 	 * No return, copies the query into inventory
 	 * @version 1 : no query, load data into inventory view manually by adding to DefaultList
+	 * @throws SQLException 
 	 */
-	private void search(String searchQ, String subSearchQ, int price) 
+	private void search(String searchQ, String subSearchQ, int price) throws SQLException 
 	{
 		DefaultListModel searchQuery = (DefaultListModel)products.getModel();
-		searchQuery.addElement(String.format("Products under:\t\t%s\t\t%s\t\t$%d", searchQ, subSearchQ, price));
 		
-		searchQueryReturn = 1;
+		result = query.executeQuery(String.format("SELECT * FROM %s.product LIMIT 20", username));
+		searchQueryReturn = result.getFetchSize();
+		while(result.next())
+			searchQuery.addElement(String.format("Products under:\t\t%s\t\t%s\t\t$%d", 
+					result.getString("name"), result.getString("supplier"), result.getString("cost")));
+		
 		if(searchQueryReturn > 20)
 		{
 			nextPage.setEnabled(true);
 			previousPage.setEnabled(true);
+			MAX_PAGES = searchQueryReturn / 20;
+		}
+		else
+		{
+			nextPage.setEnabled(false);
+			previousPage.setEnabled(false);
+			MAX_PAGES = 1;
 		}
 		currentPage.setText("" + 1);
 	}
