@@ -1,5 +1,4 @@
 
-
 /**
  * Graduate DataBases Final Project GUI
  * Professor Myers
@@ -24,6 +23,11 @@ public class GUI extends JFrame
 	private JButton placeOrder;
 	private JButton adminTools;
 	private JButton search;
+	private JButton wishListOrder;
+	private JButton wishListRemove;
+	private JButton previousPage;
+	private JButton nextPage;
+	private JLabel currentPage;
 	
 	private JPanel inventory;
 	private JPanel inventoryButtons;
@@ -35,25 +39,28 @@ public class GUI extends JFrame
 	private JPanel userSelect;
 	
 	private JList products;
+	private JLabel productName;
+	private JLabel productDescription;
+	private JLabel productAverageRating;
+	
 	private JList shoppingCart;
+	private JList userWishList;
 	
 	private JComboBox users;
-	private JComboBox dataBases;
-	private JComboBox categories;
-	private JComboBox supplier;
+	private JComboBox filterSearch;
+	private JComboBox filterSubSearch;
+	private JLabel subSearchLabel;
 	
 	private JSlider priceRange;
 	private JLabel maxPrice;
-	
-	
+ 
 	private JMenuBar menu;
 	
 	private final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 	
 	/** Instance fields for Variables */
-	private String currentUser;
-	private String currentDataBase;
-	private String currentCategory;
+	private int searchQueryReturn;
+	private int currentPageNumber;
 	
 	/** Constructor */
 	public GUI()
@@ -66,7 +73,6 @@ public class GUI extends JFrame
 	private void createGUI()
 	{
 		setSize(1000, 850);
-		super.
 		setLayout(null);
 		
 		buildMenuBar();
@@ -111,9 +117,21 @@ public class GUI extends JFrame
 		
 		//new combo box
 		users = new JComboBox(populateUsers());
+		users.addActionListener(a -> changeCurrentUser((String)users.getSelectedItem()));
 		userSelect.add(users, BorderLayout.CENTER);
 		
 		add(userSelect);
+	}
+	
+	/**
+	 * Changes the current user
+	 * 	> updates wish List
+	 * 	> changes Ad
+	 * 	> changes Rate This Product
+	 */
+	private void changeCurrentUser(String currentUser)
+	{
+		
 	}
 	
 	/**
@@ -139,26 +157,63 @@ public class GUI extends JFrame
 		inventory.setLayout(new BorderLayout());
 		
 		inventoryButtons = new JPanel();
-		inventoryButtons.setPreferredSize(new Dimension(700, 100));
+		inventoryButtons.setPreferredSize(new Dimension(700, 95));
 		inventoryButtons.setLayout(null);
-		inventoryButtons.setBackground(Color.GRAY);
+		inventoryButtons.setBackground(Color.LIGHT_GRAY);
 		
 		addToCart = new JButton("Add to Cart");
-		addToCart.setBounds(500,50, 125, 25);
+		addToCart.setBounds(475, 15, 125, 25);
 		addToCart.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		addToCart.addActionListener(a -> addToCart());
+		addToCart.addActionListener(a -> addToCart(products, shoppingCart));
 		inventoryButtons.add(addToCart);
 		
+		previousPage = new JButton("<");
+		previousPage.setBounds(120, 40, 20, 20);
+		previousPage.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		previousPage.addActionListener(p -> previousPage());
+		inventoryButtons.add(previousPage);
+		
+		nextPage = new JButton(">");
+		nextPage.setBounds(250, 40, 20, 20);
+		nextPage.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		nextPage.addActionListener(n -> nextPage());
+		inventoryButtons.add(nextPage);
+		
+		currentPageNumber = 1;
+		currentPage = new JLabel("" + currentPageNumber);
+		currentPage.setBounds(190, 40, 20, 20);
+		inventoryButtons.add(currentPage);
+		
 		addToWishList = new JButton("Add To Wish List");
-		addToWishList.setBounds(100, 50, 125, 25);
+		addToWishList.setBounds(475, 60, 125, 25);
 		addToWishList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		addToWishList.addActionListener(a -> addToWishList());
+		addToWishList.addActionListener(a -> addToWishList(products, userWishList));
 		inventoryButtons.add(addToWishList);
 		
 		products = new JList(populateProducts(new DefaultListModel()));
-		products.setPreferredSize(new Dimension(400, 700));
+		products.setPreferredSize(new Dimension(400, 400));
+		products.addListSelectionListener(p -> updateProductInfo(products.getSelectedValues())); 
 		
-		inventory.add(products, BorderLayout.CENTER);
+		JPanel productInfo = new JPanel();
+		productInfo.setPreferredSize(new Dimension(300, 400));
+		productInfo.setLayout(null);
+		
+		productName = new JLabel();
+		productName.setBounds(25, 25, 150, 25);
+		productName.setHorizontalAlignment(JLabel.CENTER);
+		productDescription = new JLabel("Description:\n");
+		productDescription.setBounds(25, 75, 250, 250);
+		productDescription.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		productAverageRating = new JLabel("Average Rating: ");
+		productAverageRating.setBounds(25, 350, 150, 25);
+		productAverageRating.setHorizontalAlignment(JLabel.CENTER);
+		
+		productInfo.add(productName);
+		productInfo.add(productDescription);
+		productInfo.add(productAverageRating);
+		
+		inventory.add(productInfo, BorderLayout.EAST);
+		inventory.add(products, BorderLayout.WEST);
 		inventory.add(inventoryButtons, BorderLayout.SOUTH);
 		add(inventory);
 	}
@@ -171,11 +226,26 @@ public class GUI extends JFrame
 	 */
 	private DefaultListModel populateProducts(DefaultListModel productsQuery)
 	{
-		productsQuery.addElement("Pen");
-		productsQuery.addElement("Computer");
-		productsQuery.addElement("Bike");
+		// productsQuery.addElement("Pen");
+		// productsQuery.addElement("Computer");
+		// productsQuery.addElement("Bike");
 		
 		return productsQuery;
+	}
+	
+	/**
+	 * Runs a query to gather product information from a selected product(s)
+	 * 
+	 * no return, hard data
+	 * @version 1 : no query, only hands 1 selected value
+	 * @throws InterruptedException 
+	 */
+	private void updateProductInfo(Object[] selected)
+	{
+		String[] p = ((String)selected[0]).split("\t\t");
+		productName.setText(p[1]);
+		productAverageRating.setText(p[2]);
+		productDescription.setText("Description: \n\n" + p[0]);
 	}
 	
 	/**
@@ -204,7 +274,7 @@ public class GUI extends JFrame
 		cartButtons.add(saveCart);
 		cartButtons.add(placeOrder);
 		
-		shoppingCart = new JList(new DefaultListMapping());
+		shoppingCart = new JList(new DefaultListModel());
 		shoppingCart.setPreferredSize(new Dimension(250, 550));
 		
 		cart.add(cartButtons, BorderLayout.SOUTH);
@@ -215,12 +285,40 @@ public class GUI extends JFrame
 	
 	/**
 	 * Builds the wishlist
+	 * contains
+	 * 	> WishList
+	 * 	> Ratings
 	 */
 	private void buildWishList()
 	{
 		wishList = new JPanel();
 		wishList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		wishList.setBounds(0, 650, 700, 150);
+		wishList.setLayout(new BorderLayout());
+		
+		userWishList = new JList(new DefaultListModel());
+		userWishList.setPreferredSize(new Dimension(200,100));
+		
+		JPanel userWishListOptions = new JPanel();
+		userWishListOptions.setPreferredSize(new Dimension(100, 100));
+		userWishListOptions.setLayout(null);
+		
+		wishListOrder = new JButton("Move to Cart");
+		wishListOrder.setBounds(5, 25, 90, 20);
+		wishListOrder.addActionListener(a -> addToCart(userWishList, shoppingCart));
+		wishListRemove = new JButton("Remove");
+		wishListRemove.setBounds(5, 75, 90, 20);
+		wishListRemove.addActionListener(b -> removeFromList(userWishList));
+		
+		userWishListOptions.add(wishListOrder);
+		userWishListOptions.add(wishListRemove);
+		
+		JPanel ratingPanel = new JPanel();
+		ratingPanel.setBackground(Color.LIGHT_GRAY);
+		
+		wishList.add(userWishListOptions,BorderLayout.CENTER);
+		wishList.add(ratingPanel, BorderLayout.EAST);
+		wishList.add(userWishList, BorderLayout.WEST);
 		
 		add(wishList);
 	}
@@ -260,17 +358,17 @@ public class GUI extends JFrame
 		options.setBounds(0, 0, 700, 100);
 		options.setLayout(null);
 		
-		dataBases = new JComboBox(new String[] {"Daymnzon", "Adventureworks", "Northwind", "Sakila", "ALL"});
-		dataBases.setBounds(0, 40, 150,25);
-		categories = new JComboBox(populateCategories());
-		categories.setBounds(175, 40, 150, 25);
-		supplier = new JComboBox(populateSuppliers());
-		supplier.setBounds(350, 40, 150, 25);
+		filterSearch = new JComboBox(new String[] {"None", "Marketplace", "Categories", "Suppliers"});
+		filterSearch.setBounds(0, 40, 150,25);
+		filterSearch.addActionListener(a -> setSubSearchFilter((String)filterSearch.getSelectedItem()));
 		
-		maxPrice = new JLabel("0");
+		filterSubSearch = new JComboBox(new String[] {"None"});
+		filterSubSearch.setBounds(175, 40, 150, 25);
+		
+		maxPrice = new JLabel("$");
 		maxPrice.setBounds(525,65, 150, 20);
 		maxPrice.setHorizontalAlignment(JLabel.CENTER);
-		priceRange = new JSlider(0, populatePrice(), 0);
+		priceRange = new JSlider(0, populatePrice(), populatePrice() / 2);
 		priceRange.setBounds(525, 40, 150, 25);
 		priceRange.setMajorTickSpacing(populatePrice() / 4);
 		priceRange.setMinorTickSpacing(populatePrice() / 16);
@@ -281,31 +379,27 @@ public class GUI extends JFrame
 		search.setBounds(300,75, 100, 25);
 		search.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		search.setEnabled(true);
-		search.addActionListener(s -> search((String)dataBases.getSelectedItem(), 
-					(String)categories.getSelectedItem(), (String)supplier.getSelectedItem(),
-					priceRange.getValue()));
+		search.addActionListener(s -> search((String)filterSearch.getSelectedItem(),
+					(String)filterSubSearch.getSelectedItem(), priceRange.getValue()));
 		
-		JLabel m = new JLabel("Market");
-		m.setBounds(0,10, 150,25);
-		m.setHorizontalAlignment(JLabel.CENTER);
-		JLabel c = new JLabel("Categories");
-		c.setBounds(175, 10, 150, 25);
-		c.setHorizontalAlignment(JLabel.CENTER);
-		JLabel s = new JLabel("Supplier");
-		s.setBounds(350, 10, 150, 25);
-		s.setHorizontalAlignment(JLabel.CENTER);
+		JLabel f = new JLabel("Filter By");
+		f.setBounds(0,10, 150,25);
+		f.setHorizontalAlignment(JLabel.CENTER);
+		
+		subSearchLabel = new JLabel("None");
+		subSearchLabel.setBounds(175, 10, 150, 25);
+		subSearchLabel.setHorizontalAlignment(JLabel.CENTER);
+		
 		JLabel p = new JLabel("Price Range");
 		p.setBounds(525, 10, 150, 25);
 		p.setHorizontalAlignment(JLabel.CENTER);
 		
-		options.add(m);
-		options.add(c);
-		options.add(s);
+		options.add(f);
+		options.add(subSearchLabel);
 		options.add(p);
 		
-		options.add(dataBases);
-		options.add(categories);
-		options.add(supplier);
+		options.add(filterSearch);
+		options.add(filterSubSearch);
 		options.add(priceRange);
 		options.add(maxPrice);
 		
@@ -321,7 +415,7 @@ public class GUI extends JFrame
 	 */
 	private String[] populateSuppliers()
 	{
-		return new String[] {"Apple", "Microsoft", "Android", "ALL"};
+		return new String[] {"Apple", "Microsoft", "Android"};
 	}
 	
 	/**
@@ -332,7 +426,7 @@ public class GUI extends JFrame
 	 */
 	private String[] populateCategories()
 	{
-		return new String[] {"Entertainment", "Hardware", "Software", "ALL"};
+		return new String[] {"Entertainment", "Hardware", "Software"};
 	}
 	
 	/**
@@ -350,31 +444,136 @@ public class GUI extends JFrame
 	 * Runs a query based on the information passed from the options ComboBox's
 	 * 
 	 * No return, copies the query into inventory
-	 * @versiom 1 : no query, load data into inventory view manually by adding to DefaultList
+	 * @version 1 : no query, load data into inventory view manually by adding to DefaultList
 	 */
-	private void search(String db, String category, String supplier, int maxPrice) 
+	private void search(String searchQ, String subSearchQ, int price) 
 	{
 		DefaultListModel searchQuery = (DefaultListModel)products.getModel();
-		searchQuery.addElement(String.format("%s\t\t%s\t\t%s\t\t$%d", db,category, supplier, maxPrice));
+		searchQuery.addElement(String.format("Products under:\t\t%s\t\t%s\t\t$%d", searchQ, subSearchQ, price));
+		
+		searchQueryReturn = 1;
+		if(searchQueryReturn > 20)
+		{
+			nextPage.setEnabled(true);
+			previousPage.setEnabled(true);
+		}
+		currentPage.setText("" + 1);
+	}
+	
+	/**
+	 * Runs a query to populate the sub search filter drop down, change label text
+	 * @param searchType
+	 * @version 1 : hard data, no query, case statement
+	 */
+	private void setSubSearchFilter(String searchType)
+	{
+		subSearchLabel.setText(searchType);
+		DefaultComboBoxModel subSearchQuery = (DefaultComboBoxModel)filterSubSearch.getModel();
+		subSearchQuery.removeAllElements();
+		String[] query;
+		switch(searchType)
+		{
+			case "Marketplace":
+			{
+				query = new String[] {"Daymnzon", "Adventureworks", "Sakila", "Northwind"};
+				break;
+			}
+			case "Categories":
+			{
+				query = populateCategories();
+				break;
+			}
+			case "Suppliers":
+			{
+				query = populateSuppliers();
+				break;
+			}
+			default:
+				query = new String[] {"None"};
+				break;
+		}
+		
+		for(String q : query)
+			subSearchQuery.addElement(q);
 	}
 	
 	/**
 	 * Adds the select products to the cart
 	 * 
+	 * @param l : JList to pull from
 	 * no return, just moves data over
 	 */
-	private void addToCart()
+	private void addToCart(JList from, JList to)
 	{
-		
+		DefaultListModel cart = (DefaultListModel)to.getModel();
+		int[] selectedProducts = from.getSelectedIndices();
+		for(int index : selectedProducts)
+			cart.addElement(from.getModel().getElementAt(index));
+			
 	}
 	
 	/**
-	 * Adds the select prodcuts to the wishList
+	 * Adds the select products to the wishList
 	 * 
 	 * no return, just moves over data
 	 */
-	private void addToWishList()
+	private void addToWishList(JList from, JList to)
 	{
-		
+		DefaultListModel w = (DefaultListModel)to.getModel();
+		int[] selectedProducts = from.getSelectedIndices();
+		for(int index : selectedProducts)
+			w.addElement(from.getModel().getElementAt(index));
+	}
+	
+	/**
+	 * Removes the selected item from the wishList
+	 * 
+	 * no return
+	 */
+	private void removeFromList(JList from)
+	{
+		int[] i = from.getSelectedIndices();
+		for(int index : i)
+			((DefaultListModel)from.getModel()).remove(index);
+	}
+
+	/**
+	 * previous page functions as research products, with a different offset
+	 * also
+	 * 	> changes currentPage field --;
+	 * 	> deactivates on 1
+	 * 
+	 * @version 1: just decrement currentPageNumber
+	 */
+	private void previousPage()
+	{
+		if(currentPageNumber == 1)
+		{
+			previousPage.setEnabled(false);
+			return;
+		}
+		currentPageNumber--;
+		nextPage.setEnabled(true);
+		currentPage.setText("" + currentPageNumber);
+	}
+	
+	/**
+	 * next page function is the inverse of previousPage
+	 * also
+	 * 	> changes currentPageNumber ++;
+	 *  
+	 * @version 1: just increment currentPageNumber, decativate on 10
+	 */
+	private void nextPage()
+	{
+		if(currentPageNumber == 10)
+		{
+			nextPage.setEnabled(false);
+			return;
+		}
+		currentPageNumber++;
+		previousPage.setEnabled(true);
+		currentPage.setText("" + currentPageNumber);
 	}
 }
+
