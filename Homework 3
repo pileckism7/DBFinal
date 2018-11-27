@@ -1,5 +1,6 @@
 /*
-Still need the actual walking procedure working... I think it is close
+* Still need the actual walking procedure working... I think it is close
+* Also dealing with 'print_location' procedure INSIDE the 'take_a_walk' procedure
 */
 
 SET SERVEROUTPUT ON;
