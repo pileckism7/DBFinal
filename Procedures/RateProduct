@@ -1,9 +1,35 @@
-DELIMITER $$
 CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `RateProduct`(p_id int, r int, c_id int, d varchar(45))
 BEGIN
 
-INSERT INTO product_rating (product_id, score, customer_id, description)
- VALUES(p_id, r, c_id, d);
-END$$
-DELIMITER ;
-SELECT * FROM malitskyc5.product_rating;
+declare curr_product INT;
+declare curr_customer INT;
+declare done int default false;
+declare orderCursor cursor FOR
+	SELECT o.product_id, o.customer_id from malitskyc5.order o;
+    
+declare continue handler for not found
+	set done = true;
+    
+open orderCursor;
+
+loop_order: loop
+	
+    fetch orderCursor into curr_product, curr_customer;
+    
+    if done then
+		leave loop_order;
+	end if;
+    
+    if curr_product = p_id AND curr_customer = c_id AND r <= 5 AND r > 0 then
+		insert into malitskyc5.rating values (r, d, p_id, c_id);
+        #FOR TESTING
+        select "Somehting added";
+	else
+		#FOR TESTING
+		select "Nothing added";
+	end if;
+end loop;
+		
+	close orderCursor;
+
+END
