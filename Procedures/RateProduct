@@ -21,7 +21,8 @@ loop_order: loop
 	end if;
     
     if curr_product = p_id AND curr_customer = c_id AND r <= 5 AND r > 0 then
-		insert into malitskyc5.rating values (r, d, p_id, c_id);
+	insert into malitskyc5.rating values (r, d, p_id, c_id);
+        insert into malitskyc5.product_rating values (p_id, r, c_id, d);
         #FOR TESTING
         select "Somehting added";
 	else
