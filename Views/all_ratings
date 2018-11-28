@@ -1,0 +1,6 @@
+# Nothing special - just shows all ratings in a neat query
+CREATE OR REPLACE VIEW all_ratings as	
+    SELECT c.username as 'User', p.name as 'Product', r.rating 'Rating', r.description as 'Description'
+    from rating r
+    join customer c USING (customer_id)
+    join product p USING (product_id);
