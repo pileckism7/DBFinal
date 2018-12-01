@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW customersOrderedByOrders as
-select o.customer_id, c.username as 'User', count(*) as 'Number of Orders'
+select o.customer_id, c.username as 'User', count(*) as num_orders
 from malitskyc5.order o
 join malitskyc5.customer c USING (customer_id)
 group by o.customer_id
