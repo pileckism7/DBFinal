@@ -1,0 +1,6 @@
+CREATE OR REPLACE VIEW customersOrderedByOrders as
+select c.username as 'User', count(*) as 'Number of Orders'
+from malitskyc5.order o
+join malitskyc5.customer c USING (customer_id)
+group by o.customer_id
+order by count(*) desc;
