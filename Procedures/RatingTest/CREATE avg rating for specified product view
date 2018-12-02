@@ -1,0 +1,7 @@
+CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `AverageRatingForProducts`()
+BEGIN
+	SELECT p.name as 'Product', AVG(pr.score) as 'Average Rating'
+	from malitskyc5.product p
+	inner join malitskyc5.product_rating pr USING (product_id)
+    group by p.product_id;
+END
