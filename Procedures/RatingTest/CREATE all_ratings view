@@ -1,0 +1,14 @@
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `malitskyc5`@`%` 
+    SQL SECURITY DEFINER
+VIEW `all_ratings` AS
+    SELECT 
+        `c`.`username` AS `User`,
+        `p`.`name` AS `Product`,
+        `pr`.`score` AS `Rating`,
+        `pr`.`description` AS `Description`
+    FROM
+        ((`product_rating` `pr`
+        JOIN `customer` `c` ON ((`pr`.`customer_id` = `c`.`customer_id`)))
+        JOIN `product` `p` ON ((`pr`.`product_id` = `p`.`product_id`)))
