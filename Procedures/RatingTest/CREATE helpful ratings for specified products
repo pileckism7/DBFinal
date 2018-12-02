@@ -1,0 +1,11 @@
+#Utilizes customersOrderedByOrder view which will prioritize reviews by customers with more orders in our system
+CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `HelpfulRatingsForProduct`(p_id int)
+BEGIN
+	SELECT p.name as 'Product', pr.score as 'Rating', pr.description as 'Description', c.username as 'User'
+	from malitskyc5.product_rating pr
+	join malitskyc5.product p USING (product_id)
+    join malitskyc5.customer c USING (customer_id)
+    join malitskyc5.customersOrderedByOrders co USING (customer_id)
+	where p.product_id = p_id
+    order by co.num_orders DESC;
+END
