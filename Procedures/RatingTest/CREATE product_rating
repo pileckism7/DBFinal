@@ -1,0 +1,7 @@
+CREATE TABLE `product_rating` (
+  `product_id` int(11) NOT NULL,
+  `score` varchar(45) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`product_id`,`customer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
