@@ -1,0 +1,62 @@
+CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `RateProduct`(p_id int, r int, c_id int, d varchar(300))
+BEGIN
+
+declare curr_product INT;
+declare curr_customer INT;
+declare curr_p_rating INT;
+declare curr_c_rating INT;
+declare finish boolean;
+declare done int default false;
+declare orderCursor cursor FOR
+	SELECT o.product_id, o.customer_id from malitskyc5.order o;
+declare ratingCursor cursor for
+	SELECT r.product_id, r.customer_id from malitskyc5.rating r;
+    
+declare continue handler for not found
+	set done = true;
+    
+open ratingCursor;
+set finish = false;
+loop_rating: loop
+
+	fetch ratingCursor into curr_p_rating, curr_c_rating;
+    
+    if (done) then
+		leave loop_rating;
+	end if;	
+    
+     if (curr_p_rating = p_id AND curr_c_rating = c_id AND r <= 5 AND r > 0) then
+        replace into malitskyc5.product_rating values (p_id, r, c_id, d);
+        set finish = true;
+        #FOR TESTING 
+        select "Something replaced";
+	else 
+		select "Nothing replaced";
+	end if;
+end loop;
+close ratingCursor;
+
+if not finish then
+set done = false;
+open orderCursor;
+loop_order: loop
+	
+    fetch orderCursor into curr_product, curr_customer;
+    
+    if (done) then
+		leave loop_order;
+	end if;
+    
+	if (curr_product = p_id AND curr_customer = c_id AND r <= 5 AND r > 0) then
+		insert into malitskyc5.product_rating values (p_id, r, c_id, d);
+		#FOR TESTING
+		select "Somehting added";
+	else
+		select "Nothing added";
+	end if;
+end loop;
+close orderCursor;
+end if;
+
+
+END
