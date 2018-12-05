@@ -1,0 +1,40 @@
+use daymnzon
+
+db.customer.insert({
+	first_name: ""
+	last_name:	""
+	username:	""
+	email:		""
+	address: [{
+				street:	""
+				state:	""
+				zip:	08755
+			}]
+})
+
+db.product.insert({
+	name:	""
+	description: ""
+	cost: 0.00
+	stock: 0
+	min_stock: 0
+	supplier:	""	
+	category:	""
+})
+
+db.supplier.insert({
+	name: ""
+})
+
+db.order.insert({
+	$product:	""
+	$customer:	""
+	date:		""
+})
+
+db.restock.insert({
+	$product:	""
+	date:	""
+})
+
+	
