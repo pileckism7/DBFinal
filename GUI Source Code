@@ -49,6 +49,8 @@ public class GUI extends JFrame
 	private JLabel productCost;
 	
 	private JList shoppingCart;
+	private JLabel totalCost;
+	
 	private JList userWishList;
 	
 	private JComboBox users;
@@ -101,7 +103,7 @@ public class GUI extends JFrame
 	{
 		try 
 		{
-			conn = DriverManager.getConnection("jdbc:mysql://elvis.rowan.edu:3306/pricem2?&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", un, pw);
+			conn = DriverManager.getConnection(String.format("jdbc:mysql://elvis.rowan.edu:3306/%s?&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", un), un, pw);
 			query = conn.createStatement();
 			return true;
 		}
@@ -360,7 +362,7 @@ public class GUI extends JFrame
 	{
 		cart = new JPanel();
 		cart.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		cart.setBounds(750, 125, 250, 500);
+		cart.setBounds(700, 125, 300, 500);
 		cart.setLayout(new BorderLayout());
 		
 		cartButtons = new JPanel();
@@ -370,14 +372,18 @@ public class GUI extends JFrame
 		
 		saveCart = new JButton("Save Cart");
 		saveCart.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		saveCart.setBounds(50, 15, 150, 30);
+		saveCart.setBounds(0, 15, 150, 30);
 		
 		placeOrder = new JButton("Order");
 		placeOrder.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		placeOrder.setBounds(25, 50, 200, 40);
+		placeOrder.setBounds(0, 50, 200, 40);
+		
+		totalCost = new JLabel("$0.00");
+		totalCost.setBounds(175, 15, 240, 30);
 		
 		cartButtons.add(saveCart);
 		cartButtons.add(placeOrder);
+		cartButtons.add(totalCost);
 		
 		shoppingCart = new JList(new DefaultListModel());
 		shoppingCart.setPreferredSize(new Dimension(250, 550));
@@ -704,12 +710,11 @@ public class GUI extends JFrame
 	 * > run insert into table queries for each selected product
 	 * 
 	 * @param list : list in which to insert
-	 * @version 3 : populates shopping cart with the string 
+	 * @version 4 : populates shopping cart with the string, calls updateTotalCost()
 	 */
 	private void addToCart(JList list) throws SQLException
 	{
 		String currUserID = ((String)users.getSelectedItem()).split(":")[0];
-		System.out.println(currUserID);
 		
 		int[] selectedProducts = list.getSelectedIndices();
 		String currProductID;
@@ -718,11 +723,32 @@ public class GUI extends JFrame
 		{
 			currProductID = ((String)list.getModel().getElementAt(i)).split(":")[0];
 			currProductName = ((String)list.getModel().getElementAt(i)).split(":")[1];
-			System.out.println(currProductID);
 			query.execute(String.format("INSERT INTO %s.order(date, amount, status, customer_id, product_id) VALUES (CURRENT_TIMESTAMP, 1, 'IN CART', %s, %s)", username, currUserID, currProductID));
 			//repopulates the cart
 			((DefaultListModel)shoppingCart.getModel()).addElement(String.format("%s:\t%s", currProductID, currProductName));
 		}
+		
+		updateTotalCost(shoppingCart);
+	}
+	
+	/**
+	 * Updates the total cost of the cart
+	 * 
+	 * takes info from the list, gathers info
+	 * @param list : list to gather products from
+	 */
+	private void updateTotalCost(JList list) throws SQLException
+	{
+		double sum = 0.0;
+		String currProductID;
+		for(int i = 0; i < list.getModel().getSize(); i ++)
+		{
+			currProductID = ((String)list.getModel().getElementAt(i)).split(":")[0];
+			result = query.executeQuery(String.format("SELECT product.cost FROM product WHERE product_id = %s", currProductID));
+			result.first();
+			sum += Double.parseDouble(result.getString("cost"));
+		}
+		totalCost.setText(String.format("$%.2f", sum));
 	}
 	
 	/**
@@ -815,11 +841,3 @@ public class GUI extends JFrame
 	}
 }
 
-
-public class Main 
-{
-	public static void main(String[] args)
-	{
-		GUI g = new GUI("pricem2", "crabjournal");
-	}
-}
