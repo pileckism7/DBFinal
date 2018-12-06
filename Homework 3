@@ -1,8 +1,3 @@
-/*
-* Still need the actual walking procedure working... I think it is close
-* Also dealing with 'print_location' procedure INSIDE the 'take_a_walk' procedure
-*/
-
 SET SERVEROUTPUT ON;
 
 CREATE TABLE lakes
@@ -283,7 +278,7 @@ INSERT INTO PERSON VALUES
 INSERT INTO user_sdo_geom_metadata
 VALUES
     (
-        'person',
+        'person_name',
         'location',
         SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 100, 0.005),
             SDO_DIM_ELEMENT('Y', 0, 100, 0.005)),
@@ -298,12 +293,13 @@ CREATE INDEX person_spatial_index
     
 --PROCEDURE WALKING
 create or replace PROCEDURE take_a_walk
-    (start_x INTEGER, start_y INTEGER, end_x INTEGER, end_y INTEGER)
+    (individual_id int, start_x INTEGER, start_y INTEGER, end_x INTEGER, end_y INTEGER)
 IS
     curr_x INTEGER;
     curr_y INTEGER;
     --slope_sum INTEGER;
     --slope INTEGER;
+    lake_indicator VARCHAR(45);
     p_loc SDO_GEOMETRY;
     curr_lake VARCHAR(45);
     BEGIN
@@ -313,7 +309,6 @@ IS
         --prints out starting location        
         dbms_output.put_line('Starting at: ' || curr_x || ' ' || curr_y);
 
-        --Slope Method in Progress...
         WHILE (NOT((curr_x = end_x) AND (curr_y = end_y)))
         LOOP
             IF (curr_x != end_x) THEN
@@ -330,7 +325,7 @@ IS
                     curr_y := curr_y - 1;
                 END IF;
             END IF;
-                
+
             update person p1 set p1.location =
             SDO_GEOMETRY 
                 (
@@ -339,83 +334,54 @@ IS
                     SDO_POINT_TYPE(curr_x, curr_y, NULL),
                     NULL,
                     NULL
-                ) where p1."person_name" = 'P1';
-                
+                ) where p1.p_id = individual_id;
+
             SELECT p.location into p_loc
             from person p
-            where p."person_name" = 'P1';
+            where p.p_id = individual_id;
+
+            lake_indicator := is_in_lake(individual_id);
+            dbms_output.put_line('x: ' || curr_x || ' y: ' || curr_y || ' ' || lake_indicator);
             
-            dbms_output.put_line('Now at: ' || curr_x || ' ' || curr_y);
-                    
-            SELECT l."lake_name" into curr_lake
-            FROM lakes l
-            WHERE SDO_INSIDE(
-                p_loc, 
-                l.shape) = 'TRUE';
-            --IF curr_lake does not equal null, then you are in a lake
-            IF (curr_lake is NOT NULL) THEN
-                dbms_output.put_line('IN: ' || curr_lake);
-            ELSE
-                dbms_output.put_line('ON land');
-            END IF;
-                
+
         END LOOP;
         dbms_output.put_line('Ending at: ' || curr_x || ' ' || curr_y);
-        
+
     END;
 /
 
---prints out the location based upon the x and y values
---May or may not need
-create or replace PROCEDURE print_location(current_x INT, current_y INT)
-IS
-    curr_lake VARCHAR(45);
-    
-    BEGIN
-        SELECT l."lake_name" INTO curr_lake
-        FROM lakes l
-        WHERE SDO_RELATE(
-            SDO_GEOMETRY
-            (
-                2001,
-                NULL,
-                SDO_POINT_TYPE(current_x, current_y, NULL),
-                NULL,
-                NULL
-            ), 
-            l.shape,
-            'mask = INSIDE' ) = 'TRUE';
-
-        --IF curr_lake does not equal null, then you are in a lake
-        IF (curr_lake is NOT NULL) THEN
-            dbms_output.put_line('IN: ' || curr_lake);
-        ELSE
-            dbms_output.put_line('ON land');
-        END IF;
-END;
-/
 
 --View that displays all the people in lakes
 CREATE OR REPLACE VIEW People_in_lakes as
-    select p.p_id, p."person_name", l."lake_name" 
+    select p.p_id, p.person_name, l."lake_name" 
     from person p, lakes l  
     where sdo_inside (p.location, l.shape) = 'TRUE';
 
---Procedure that tells if a person is in a lake  
-create or replace PROCEDURE IN_LAKE
-(PERSON_ID IN INT) 
+
+--Function that returns what lake someone is in or if they are walking on land
+create or replace FUNCTION IS_IN_LAKE 
+(PERSON_ID IN INT) RETURN VARCHAR
 IS
     num INT;
+    l_name VARCHAR(45);
 BEGIN
     select count(*) into num
     from people_in_lakes p1
     where p1.p_id = person_id;
     
+
+    
     if(num > 0) then
-        dbms_output.put_line('In a Lake');
+        select pil."lake_name" into l_name
+        from people_in_lakes pil
+        where pil.p_id = person_id;
+        return 'Swimming in ' ||  l_name;
     else
-        dbms_output.put_line('Not in a Lake');
+        return 'Walking on solid ground';
+    
+    --if (name IS NOT NULL) THEN
+
     end if;
     
-END IN_LAKE;
+END IS_IN_LAKE;
 /
