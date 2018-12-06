@@ -1,0 +1,336 @@
+SET SERVEROUTPUT ON;
+/*
+Table for the lakes
+*/
+CREATE TABLE lakes
+(
+    lake_id INT PRIMARY KEY,
+    lake_name VARCHAR(45),
+    shape SDO_GEOMETRY NOT NULL
+);
+
+/*
+Perimiter -> exterior polygon of upper aetna lake (counterclockwise)
+Hole -> interior polygon of the upper aetna lake island (clockwise)
+*/
+INSERT INTO lakes VALUES
+(
+    1,
+    'Upper Aetna Lake',
+    SDO_GEOMETRY
+    (
+        2003,
+        NULL,
+        NULL,
+        SDO_ELEM_INFO_ARRAY(1, 1003, 1, 125,2003,1),
+        SDO_ORDINATE_ARRAY(
+            67,36,68,36,69,37,70,37,71,38,73,37,73,36,72,35,73,33,75,33,
+            76,31,75,30,76,27,78,26,78,25,79,23,82,22,84,20,85,19,87,19,
+            87,25,86,26,88,27,94,26,94,25,95,23,96,22,98,23,96,22,98,23,
+            97,24,97,27,98,30,97,30,96,29,96,26,92,29,91,29,90,31,88,30,
+            87,29,86,29,85,30,82,27,78,30,78,34,76,36,77,38,75,41,75,42,
+            74,41,73,42,72,44,72,45,70,44,69,44,66,44,65,42,66,41,67,40,
+            68,37,67,36, 84,26, 85,27, 86,28, 87,28, 84,26) 
+    )
+);
+/*
+Perimiter -> exterior polygon of lower aetna lake (counterclockwise)
+*/
+INSERT INTO lakes VALUES
+(
+    3,
+    'Lower Aetna Lake',
+    SDO_GEOMETRY
+    (
+        2003,
+        NULL,
+        NULL,
+        SDO_ELEM_INFO_ARRAY(1, 1003, 1),
+        SDO_ORDINATE_ARRAY(
+            48,68,56,61,54,57,53,57,55,54,59,52,60,50,61,49,
+            61,48,63,44,62,43,60,42,60,41,60,40,63,43,65,43,65,44,64,47,
+            63,48,64,51,64,52,64,53,60,54,60,55,59,57,59,55,59,57,53,62,
+            51,69,51,71,54,70,54,71,53,72,52,72,51,72,48,74,47,72,48,68)
+    )
+);
+
+/*
+Update metadata for lakes)
+*/
+INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
+VALUES
+    (
+        'lakes',
+        'shape',
+        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 100, 0.005), 
+            SDO_DIM_ELEMENT('Y', 0, 100, 0.005)),NULL
+    );
+/*
+create the spacial index for the lakes
+*/
+
+CREATE INDEX lakes_spatial_index ON lakes(shape)
+    INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+    
+
+
+/*
+Table for all the points of interest around medford
+*/
+CREATE TABLE places_of_interest
+(
+    poi_id INT PRIMARY KEY,
+    place_name VARCHAR(45),
+    place_location SDO_GEOMETRY NOT NULL
+);
+
+/*
+Zinc Cafe
+*/
+INSERT INTO places_of_interest VALUES
+(1,'Zinc Cafe',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(26,99, NULL), NULL,NULL));
+
+/*
+P.J Whelihans
+*/
+INSERT INTO places_of_interest VALUES
+(2,'P.J. Whelihans',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(40,74, NULL),NULL,NULL));
+
+/*
+YMCA
+*/
+INSERT INTO places_of_interest VALUES
+(3,'Y.M.C.A',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(79,8, NULL),NULL,NULL));
+
+/*
+Country Club
+*/
+INSERT INTO places_of_interest VALUES
+(4,'Medford Lakes Country Club',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(75,61, NULL),NULL,NULL));
+
+/*
+Big Chief Trail
+*/
+INSERT INTO places_of_interest VALUES
+(5,'13 Big Chief Trail',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(44, 51, NULL),NULL,NULL));
+
+/*
+Chicagami Trailhead
+*/
+INSERT INTO places_of_interest VALUES
+(6,'Chicagami Trailhead',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(80, 21, NULL),NULL,NULL));
+/*
+Upper Aetna Lake Dam
+*/
+INSERT INTO places_of_interest VALUES
+(7,'Upper Aetna Lake Dam',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(90, 31, NULL),NULL,NULL));
+/*
+EXTRA -> Upper Lake Island
+*/
+INSERT INTO places_of_interest VALUES
+(8,'Upper lake island',SDO_GEOMETRY(2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1, 1003, 1),SDO_ORDINATE_ARRAY(84,26, 87,28, 86,28, 85,27, 84,26)
+    )
+);
+
+/*
+Update the metadata for places of interest
+*/
+INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
+VALUES
+    (   'places_of_interest',
+        'place_location',
+        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 100, 0.005),
+            SDO_DIM_ELEMENT('Y', 0, 100, 0.005)),NULL
+    );
+    
+/*
+Create the spacial index for the places of interest
+*/
+CREATE INDEX places_spatial_index ON places_of_interest(place_location)
+    INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+
+/*
+Person table
+*/
+
+CREATE TABLE PERSON(
+    p_id INT PRIMARY KEY,
+    "PERSON_NAME" VARCHAR(20),
+    location SDO_GEOMETRY
+);
+
+/* 
+Insert people into Person table
+*/
+INSERT INTO PERSON VALUES
+(1,'Skeeter',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(90, 11, NULL),NULL,NULL));
+INSERT INTO PERSON VALUES
+(2,'Tony',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(86, 28, NULL),NULL,NULL));
+INSERT INTO PERSON VALUES
+(3,'Charles',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(22, 22, NULL),NULL,NULL));
+INSERT INTO PERSON VALUES
+(4,'Jack',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(60, 53, NULL),NULL,NULL));
+INSERT INTO PERSON VALUES
+(5,'Lauren',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(79, 8, NULL),NULL,NULL));
+INSERT INTO PERSON VALUES
+(6,'Kim',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(85, 27, NULL),NULL,NULL));
+INSERT INTO PERSON VALUES
+(7,'Mike',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(32, 89, NULL),NULL,NULL));
+INSERT INTO PERSON VALUES
+(8,'Laker',SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(32, 89, NULL),NULL,NULL));
+
+/*
+Update Metadata for Person
+*/
+INSERT INTO user_sdo_geom_metadata
+VALUES
+    (   'person_name',
+        'location',
+        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 100, 0.005),
+            SDO_DIM_ELEMENT('Y', 0, 100, 0.005)),NULL
+    );
+
+/*
+Create spacial index for person
+*/
+CREATE INDEX person_spatial_index
+    ON PERSON(location)
+    INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+    
+/*
+View that displays all the people in lakes
+*/
+CREATE OR REPLACE VIEW People_in_lakes as
+    select p.p_id, p.person_name, l.lake_name
+from person p, lakes l
+WHERE SDO_RELATE(  p.location, l.shape, 'mask= INSIDE') = 'TRUE'
+ORDER BY 1;
+
+/*
+View for people in places of interest
+*/
+CREATE OR REPLACE VIEW People_in_poi as
+    select p.p_id, p.person_name, poi.place_name
+from person p, places_of_interest poi
+WHERE SDO_RELATE(  p.location, poi.place_location, 'mask= EQUAL+ON') = 'TRUE'
+ORDER BY 1;
+
+
+
+
+/*
+Function which takes in a Person and checks if they are on LAND/WATER/POI
+@param PERSON_ID The persom whom we are checking
+@return Returns the string which represents the current location on the graph..
+*/
+create or replace FUNCTION IS_IN_LAKE 
+(PERSON_ID IN INT) RETURN VARCHAR
+IS
+    numInLake INTEGER;
+    numPOI INTEGER;
+    l_name VARCHAR(45);
+    poi_name VARCHAR(45);
+BEGIN
+    select count(*) into numInLake
+    from people_in_lakes p1
+    where p1.p_id = person_id;
+    
+    select count(*) into numPOI
+    from people_in_poi poi
+    where poi.p_id = person_id;
+    
+    IF(numInLake > 0) then
+        select pil.lake_name into l_name
+        from people_in_lakes pil
+        where pil.p_id = person_id;
+        return 'Swimming in ' ||  l_name;
+        
+    ELSIF (numPOI > 0) then
+        SELECT poi.place_name into poi_name
+        from people_in_poi poi
+        where poi.p_id = person_id;
+        return 'Stopped for a snack at ' || poi_name;
+        
+    ELSE
+        return 'Walking on solid ground';
+        
+    end if;
+    
+END IS_IN_LAKE;
+/
+
+
+
+
+/*
+Move procedure which takes in a person, starting and end destination.
+Prints to the command prompt each coordinate of the trip...
+@param individual_id The individual whom is going to be moving
+@param startPOI Where person will start their trip (place of interest id)
+@param endPOI Where person will end their trip (place of interest id)
+*/
+
+create or replace PROCEDURE move
+    (individual_id int, startPOI int, endPOI int)
+IS
+    curr_x INTEGER;
+    curr_y INTEGER;
+    end_x INTEGER;
+    end_y INTEGER;
+    end_name VARCHAR(45);
+    start_name VARCHAR(45);
+    lake_indicator VARCHAR(255);
+    p_loc SDO_GEOMETRY;
+    curr_lake VARCHAR(45);
+    BEGIN
+        SELECT poi.place_name, poi.place_location.SDO_POINT.X, poi.place_location.SDO_POINT.Y into start_name, curr_x, curr_Y
+        from places_of_interest poi
+        where poi.poi_id = startPOI;
+        
+        SELECT poi.place_name, poi.place_location.SDO_POINT.X, poi.place_location.SDO_POINT.Y into end_name, end_x, end_y
+        from places_of_interest poi
+        where poi.poi_id = endPOI;       
+        
+        lake_indicator := 'Starting  at ' || start_name || '' ;
+        WHILE (NOT((curr_x = end_x) AND (curr_y = end_y)))
+        LOOP
+        
+        dbms_output.put_line('x: ' || curr_x || ' y: ' || curr_y || ' ' || lake_indicator);
+       
+            IF (curr_x != end_x) THEN
+                IF (curr_x < end_x) THEN
+                    curr_x := curr_x + 1;
+                ELSE
+                    curr_x := curr_x -1;
+                END IF;
+            END IF;
+            IF (curr_y != end_y) THEN
+                IF(curr_y < end_y) THEN
+                    curr_y := curr_y + 1;
+                ELSE
+                    curr_y := curr_y - 1;
+                END IF;
+            END IF;
+
+            update person p1 set p1.location =
+            SDO_GEOMETRY 
+                (
+                    2001,
+                    NULL,
+                    SDO_POINT_TYPE(curr_x, curr_y, NULL),
+                    NULL,
+                    NULL
+                ) where p1.p_id = individual_id;
+
+            SELECT p.location into p_loc
+            from person p
+            where p.p_id = individual_id;
+            
+            lake_indicator := is_in_lake(individual_id);
+            
+        END LOOP;
+        dbms_output.put_line('x: ' || curr_x || ' y: ' || curr_y || ' ' || 'Arived at ' || end_name);
+    END;
+/
+
+
