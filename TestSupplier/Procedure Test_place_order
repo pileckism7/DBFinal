@@ -6,7 +6,7 @@ BEGIN
     
     (SELECT count(*) into isProductAvailable from test_our_product op where op.product_id = p_id);
     
-	IF((SELECT amount from product WHERE product_id = p_id) > amnt) AND (isProductAvailable > 1)  THEN
+	IF((SELECT amount from product WHERE product_id = p_id) > amnt) AND (isProductAvailable > 0)  THEN
 		BEGIN
 			SELECT (amount - amnt) INTO remainStock
 			FROM product
