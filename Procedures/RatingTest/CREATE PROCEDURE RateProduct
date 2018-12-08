@@ -1,4 +1,4 @@
-CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `RateProduct`(p_id int, r int, c_id int, d varchar(300))
+CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `RateProduct`(p_id int, r double, c_id int, d varchar(300))
 BEGIN
 
 declare curr_product INT;
