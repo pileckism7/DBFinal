@@ -9,17 +9,17 @@ declare finish boolean;
 declare done int default false;
 declare orderCursor cursor FOR
 	SELECT o.product_id, o.customer_id from malitskyc5.order o;
-declare ratingCursor cursor for
-	SELECT r.product_id, r.customer_id from malitskyc5.rating r;
+declare prCursor cursor for
+	SELECT pr.product_id, pr.customer_id from malitskyc5.product_rating pr;
     
 declare continue handler for not found
 	set done = true;
     
-open ratingCursor;
+open prCursor;
 set finish = false;
 loop_rating: loop
 
-	fetch ratingCursor into curr_p_rating, curr_c_rating;
+	fetch prCursor into curr_p_rating, curr_c_rating;
     
     if (done) then
 		leave loop_rating;
@@ -28,13 +28,9 @@ loop_rating: loop
      if (curr_p_rating = p_id AND curr_c_rating = c_id AND r <= 5 AND r > 0) then
         replace into malitskyc5.product_rating values (p_id, r, c_id, d);
         set finish = true;
-        #FOR TESTING 
-        select "Something replaced";
-	else 
-		select "Nothing replaced";
 	end if;
 end loop;
-close ratingCursor;
+close prCursor;
 
 if not finish then
 set done = false;
@@ -49,10 +45,6 @@ loop_order: loop
     
 	if (curr_product = p_id AND curr_customer = c_id AND r <= 5 AND r > 0) then
 		insert into malitskyc5.product_rating values (p_id, r, c_id, d);
-		#FOR TESTING
-		select "Somehting added";
-	else
-		select "Nothing added";
 	end if;
 end loop;
 close orderCursor;
