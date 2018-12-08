@@ -1,0 +1,34 @@
+CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `test_place_order`(amnt int, c_id int, p_id int)
+BEGIN
+	DECLARE remainStock INT;
+	DECLARE minStock INT;
+    DECLARE isProductAvailable INT;
+    
+    (SELECT count(*) into isProductAvailable from test_our_product op where op.product_id = p_id);
+    
+	IF((SELECT amount from product WHERE product_id = p_id) > amnt) AND (isProductAvailable > 1)  THEN
+		BEGIN
+			SELECT (amount - amnt) INTO remainStock
+			FROM product
+			WHERE product_id = p_id;
+			SELECT min_stock INTO minStock
+			FROM product
+			WHERE product_id = p_id;
+
+			IF(remainStock < minStock) THEN
+				CALL restock_product(p_id);
+				CALL populate_restock(p_id);
+				UPDATE product
+				SET amount = remainStock + minStock
+				WHERE product_id = p_id;
+			ELSE 
+				UPDATE product
+				SET amount = amount - amnt
+				WHERE product_id = p_id;
+			END IF;
+    
+			insert into malitskyc5.order(date, amount, customer_id, product_id,status)
+			VALUES(current_date(), amnt, c_id, p_id, 'Processed');
+		END;
+    END IF;
+END
