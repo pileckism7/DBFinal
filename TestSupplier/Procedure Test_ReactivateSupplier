@@ -1,0 +1,7 @@
+CREATE DEFINER=`malitskyc5`@`%` PROCEDURE `Test_ReactivateSupplier`(s_id int)
+BEGIN
+update malitskyc5.supplier s
+set
+	isDeleted = 0
+where s.supplier_id = s_id;
+END
