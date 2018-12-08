@@ -1,0 +1,8 @@
+CREATE TABLE `supplier` (
+  `supplier_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `isDeleted` int(1) NOT NULL,
+  PRIMARY KEY (`supplier_id`),
+  UNIQUE KEY `supplier_id_UNIQUE` (`supplier_id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1
