@@ -1,15 +1,12 @@
-
 /*
  * TODO
- * 		admin page
- * 		save cart button
  * 		Color themes
+ * 		Add in a rating
+ * 		Adventureworks string parsing (FIX error)
+ * 		Above ADmin, welcome back greeting
  */
 
-
-
 /**
-
  * Graduate DataBases Final Project GUI
  * Professor Myers
  * 
@@ -62,7 +59,7 @@ public class GUI extends JFrame
 	private JLabel totalCost;
 	
 	private JList userWishList;
-	private JList userAdvertisementList;
+	private JLabel userAdvertisement;
 	
 	private JComboBox users;
 	private JComboBox filterSearch;
@@ -184,7 +181,7 @@ public class GUI extends JFrame
 	 * Changes the current user
 	 *  > calculates the current customer_id
 	 * 	> updates wish List
-	 * 	> changes Ad
+	 * 	> updates cart
 	 * 	> changes Rate This Product
 	 */
 	private void changeCurrentUser(String currentUser) throws SQLException
@@ -194,6 +191,8 @@ public class GUI extends JFrame
 		
 		try {populateUserWishList(c_id, (DefaultListModel)userWishList.getModel()); }
 		catch(SQLException e) {}
+		
+		shoppingCart.setModel(new DefaultListModel());
 	}
 	
 	/**
@@ -204,14 +203,11 @@ public class GUI extends JFrame
 	private void populateUserWishList(int customer_id, DefaultListModel wishList) throws SQLException
 	{
 		wishList.removeAllElements();
-		result = query.executeQuery(String.format("SELECT product.product_id, product.name FROM customer "
-												+ "JOIN customer_wish ON customer.customer_id = customer_wish.customer_id "
-												+ "JOIN product ON customer_wish.product_id = product.product_id "
-												+ "WHERE customer.customer_id = %s", customer_id));
+		result = query.executeQuery(String.format("CALL %s.wished_products_not_purchased(%d)", username, customer_id));
 		while(result.next())
-			wishList.addElement(String.format("%s:\t%s",result.getString("product_id"), result.getString("name")));
+			wishList.addElement(String.format("%s:", result.getString("name")));
 	}
-	
+		
 	/**
 	 * Runs a query to add users to the GUI
 	 * 
@@ -276,7 +272,9 @@ public class GUI extends JFrame
 		addToWishList = new JButton("Add To Wish List");
 		addToWishList.setBounds(475, 60, 125, 25);
 		addToWishList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		addToWishList.addActionListener(a -> addToWishList(products, userWishList));
+		addToWishList.addActionListener(a -> {
+			try { addToWishList(products); } 
+			catch (SQLException e1) {} });
 		inventoryButtons.add(addToWishList);
 		
 		queryString = "SELECT product.product_id, product.name FROM product";
@@ -287,7 +285,10 @@ public class GUI extends JFrame
 			try 
 			{ 
 				if(products.getSelectedIndex() > -1)
+				{
 					updateProductInfo((String)products.getSelectedValue()); 
+					updateAdvertisement((String)products.getSelectedValue());
+				}
 			} 
 			catch (SQLException e) {} });
 		
@@ -298,8 +299,8 @@ public class GUI extends JFrame
 		productName = new JLabel();
 		productName.setBounds(25, 25, 250, 25);
 		productName.setHorizontalAlignment(JLabel.CENTER);
-		productDescription = new JLabel("Description:\n");
-		productDescription.setBounds(25, 75, 250, 250);
+		productDescription = new JLabel("Description:");
+		productDescription.setBounds(25, 75, 300, 100);
 		productDescription.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		productCost = new JLabel("Cost");
 		productCost.setBounds(25, 350, 150, 25);
@@ -323,17 +324,22 @@ public class GUI extends JFrame
 	 * @ return new DefaultListModel of products
 	 * @ version 4: size calculated elsewhere
 	 */
-	private DefaultListModel populateProducts(DefaultListModel productsQuery) throws SQLException
+	private DefaultListModel populateProducts(DefaultListModel productsQuery, int maxPrice) throws SQLException
 	{	
 		productsQuery = new DefaultListModel();
 		
 		int offset = (currentPageNumber-1) * MAX_RESULTS_PER_PAGE;
+		
+		String priceLimit;
+		if(queryString.contains("WHERE"))
+			priceLimit = String.format(" AND Price < %d", maxPrice);
+		else
+			priceLimit = String.format(" WHERE Price < %d", maxPrice);
 		String queryStringLimits = String.format(" LIMIT %d OFFSET %d", MAX_RESULTS_PER_PAGE, offset);
 				
-		result = query.executeQuery(queryString + queryStringLimits);
+		result = query.executeQuery(queryString + priceLimit + queryStringLimits);
 		while(result.next())
 			productsQuery.addElement(String.format("%s:\t\t$%.2f:\t\t%s", result.getString("Name"), Double.parseDouble(result.getString("Price")), result.getString("Supplier")));
-	
 		
 		MAX_PAGES = size / MAX_RESULTS_PER_PAGE;
 		if(MAX_PAGES+1 < 2)
@@ -379,8 +385,43 @@ public class GUI extends JFrame
 		if(result.first())
 		{
 			productName.setText(result.getString("Name"));
-			productDescription.setText(result.getString("Description"));
+			productDescription.setText(convertToMulti(String.format("%s\nSupplied By: %s\nCategory: %s", result.getString("Description"), result.getString("Supplier"), result.getString("Category"))));
 			productCost.setText("$" + Double.parseDouble(result.getString("Price")));
+		}
+	}
+	
+	/**
+	 * Runs a query to gather suggested products for the customer, OR will use the not selling well view
+	 * 
+	 * @param p : String of the current selected product
+	 * @throws SQLExeception
+	 */
+	private void updateAdvertisement(String p) throws SQLException
+	{
+		String[] pInfo = p.split(":");
+		String pName = pInfo[0].trim();
+		String pSupplier = pInfo[2].trim();
+		
+		result = query.executeQuery(String.format("SELECT Category FROM overall_inventory WHERE Name = '%s' AND Supplier = '%s'", pName, pSupplier));
+		result.first();
+		String catName = result.getString("Category");
+		
+		String text = "CHECK OUT THESE PRODUCTS!\n";
+		result = query.executeQuery(String.format("SELECT category_id FROM categories WHERE name = '%s'", catName));
+		if(result.first())
+		{
+			result.first();
+			String catID = result.getString("category_id");
+			result = query.executeQuery(String.format("CALL %s.most_highly_wished_product_by_category(%s)", username, catID));
+			result.first();
+			text += String.format("%s", result.getString("amount_per_category"));
+			
+		}
+		else {
+		result = query.executeQuery("SELECT * FROM not_selling_well");
+		while(result.next())
+			text += String.format("%s AT $ %.2f\n", result.getString("Name"), Double.parseDouble(result.getString("Price")));
+		userAdvertisement.setText(convertToMulti(text));
 		}
 	}
 	
@@ -399,9 +440,10 @@ public class GUI extends JFrame
 		cartButtons.setPreferredSize(new Dimension(250, 100));
 		cartButtons.setLayout(null);
 		
-		saveCart = new JButton("Save Cart");
+		saveCart = new JButton("Remove Item");
 		saveCart.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		saveCart.setBounds(0, 15, 150, 30);
+		saveCart.addActionListener(a -> { removeFromList(shoppingCart); updateTotalCost(shoppingCart); } ); 
 		
 		placeOrder = new JButton("Order");
 		placeOrder.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -429,8 +471,9 @@ public class GUI extends JFrame
 	 */
 	private void checkOrder(int numProducts)
 	{
+		String curr = ((String)users.getSelectedItem()).split(":")[0];
 		if(numProducts > 0)
-			new Order(shoppingCart, "2", username, password); 
+			new Order(shoppingCart, curr, username, password); 
 	}
 	
 	/**
@@ -460,29 +503,20 @@ public class GUI extends JFrame
 			catch (SQLException e) {} });
 		wishListRemove = new JButton("Remove");
 		wishListRemove.setBounds(5, 75, 90, 20);
-		wishListRemove.addActionListener(b -> removeFromList(userWishList));
+		wishListRemove.addActionListener(b -> {
+			try { removeFromWishList(userWishList); } 
+			catch (SQLException e) {} });
 		
 		userWishListOptions.add(wishListOrder);
 		userWishListOptions.add(wishListRemove);
 		
-		userAdvertisementList = new JList(populateAdvertisementList(new DefaultListModel()));
-		userAdvertisementList.setPreferredSize(new Dimension(300, 100));
+		userAdvertisement = new JLabel();
+		userAdvertisement.setPreferredSize(new Dimension(300, 100));
 		
 		wishList.add(userWishListOptions,BorderLayout.CENTER);
-		wishList.add(userAdvertisementList, BorderLayout.EAST);
+		wishList.add(userAdvertisement, BorderLayout.EAST);
 		wishList.add(userWishList, BorderLayout.WEST);
 		add(wishList);
-	}
-	
-	/**
-	 * populates the advertisements based on the current users purchases
-	 * 
-	 * @version 1: runs a query against the view
-	 * @return map : populate Model to be displayed
-	 */
-	private DefaultListModel populateAdvertisementList(DefaultListModel map)
-	{
-		return map;
 	}
 	
 	/**
@@ -501,9 +535,9 @@ public class GUI extends JFrame
 		adminTools = new JButton("Admin Access");
 		adminTools.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		adminTools.setBounds(50, 125, 200, 25);
+		adminTools.addActionListener(a -> new Admin(username, password));
 		
 		admin.add(adminTools, BorderLayout.SOUTH);
-		
 		add(admin);
 	}
 	
@@ -623,7 +657,6 @@ public class GUI extends JFrame
 			try { newCost = Double.parseDouble(result.getString("Price")); break; }
 			catch (NumberFormatException e) {};
 		}
-		System.out.println(newCost);
 	
 		try{ priceRange.setMaximum(((int)newCost + 1)); } 
 		catch (NumberFormatException e) {};
@@ -640,15 +673,15 @@ public class GUI extends JFrame
 	{
 		maxPrice.setText("$" + priceRange.getValue());
 		
-		String tempQuery = queryString;
+		/*String tempQuery = queryString;
 		if(((String)filterSearch.getSelectedItem()).equals("Marketplace") || ((String)filterSearch.getSelectedItem()).equals("None"))
 			queryString += String.format(" WHERE Price < %d", priceRange.getValue());
 		else
-			queryString += String.format(" AND Price < %d", priceRange.getValue());
+			queryString += String.format(" AND Price < %d", priceRange.getValue());*/
 			
-		products.setModel(populateProducts((DefaultListModel)products.getModel()));
-		queryString = tempQuery;
+		products.setModel(populateProducts((DefaultListModel)products.getModel(), priceRange.getValue()));
 	}
+	
 	/**
 	 * Creates a String for the populateProducts method to execute a proper query
 	 * 
@@ -711,7 +744,7 @@ public class GUI extends JFrame
 			}
 			default:
 			{
-				queryString = "SELECT * FROM overall_inventory ";
+				queryString = "SELECT * FROM overall_inventory";
 				queryDetailsString = "SELECT * FROM overall_inventory WHERE Name = '%s' AND Price = %.2f";
 			}
 		}
@@ -721,10 +754,10 @@ public class GUI extends JFrame
 		
 		try { size = getSearchSize(); }
 		catch (SQLException E) {};
-		try { products.setModel(populateProducts((DefaultListModel)products.getModel())); }
+		try { populatePrice(" ORDER BY Price DESC"); }	
 		catch (SQLException E) {};	
-		try { populatePrice(" ORDER BY Price DESC"); }
-		catch (SQLException E) {};
+		try { products.setModel(populateProducts((DefaultListModel)products.getModel(), priceRange.getValue())); }
+		catch (SQLException E) {};	
 	}
 	
 	/**
@@ -779,13 +812,18 @@ public class GUI extends JFrame
 		for(int i : selectedProducts)
 		{
 			currProductName = ((String)list.getModel().getElementAt(i)).split(":")[0];
-			result = query.executeQuery(String.format("SELECT ID FROM overall_inventory WHERE Name = '%s'", currProductName));
+			result = query.executeQuery(String.format("SELECT * FROM overall_inventory WHERE Name = '%s'", currProductName));
 			result.first();
 			
-			query.execute(String.format("CALL %s.place_order(1, %s, %d)", username, currUserID, Integer.parseInt(result.getString("ID"))));
-			((DefaultListModel)shoppingCart.getModel()).addElement(String.format("%s:\t$%.2f", currProductName, 0.00));
+			String name = result.getString("Name");
+			String id = result.getString("ID");
+			String price = result.getString("Price");
+			Double priceNum; 
+			try { priceNum = Double.parseDouble(price); }
+			catch(NumberFormatException e) { priceNum = Double.parseDouble(((String)list.getModel().getElementAt(i)).split(":")[1].trim().substring(1)); }
+			
+			((DefaultListModel)shoppingCart.getModel()).addElement(String.format("%s:\t$%.2f", name, priceNum));
 		}
-		
 		updateTotalCost(shoppingCart);
 	}
 	
@@ -795,16 +833,14 @@ public class GUI extends JFrame
 	 * takes info from the list, gathers info
 	 * @param list : list to gather products from
 	 */
-	private void updateTotalCost(JList list) throws SQLException
+	private void updateTotalCost(JList list)
 	{
 		double sum = 0.0;
-		String currProductID;
+		String currProductValue;
 		for(int i = 0; i < list.getModel().getSize(); i ++)
 		{
-			currProductID = ((String)list.getModel().getElementAt(i)).split(":")[0];
-			result = query.executeQuery(String.format("SELECT product.cost FROM product WHERE product_id = %s", currProductID));
-			result.first();
-			sum += Double.parseDouble(result.getString("cost"));
+			currProductValue = ((String)list.getModel().getElementAt(i)).split(":")[1].trim().substring(1);
+			sum += Double.parseDouble(currProductValue);
 		}
 		totalCost.setText(String.format("$%.2f", sum));
 	}
@@ -814,16 +850,49 @@ public class GUI extends JFrame
 	 * 
 	 * no return, just moves over data
 	 */
-	private void addToWishList(JList from, JList to)
+	private void addToWishList(JList from) throws SQLException
 	{
-		DefaultListModel w = (DefaultListModel)to.getModel();
+		String currUserID = ((String)users.getSelectedItem()).split(":")[0];
+		
 		int[] selectedProducts = from.getSelectedIndices();
-		for(int index : selectedProducts)
-			w.addElement(from.getModel().getElementAt(index));
+		String currProductName;
+		for(int i : selectedProducts)
+		{
+			currProductName = ((String)from.getModel().getElementAt(i)).split(":")[0];
+			result = query.executeQuery(String.format("SELECT * FROM our_product WHERE Name = '%s'", currProductName));
+			result.first();
+			
+			String name = result.getString("Name");
+			String id = result.getString("ID");
+			
+			query.execute(String.format("CALL %s.add_to_wish_list(%s, %s);", username, currUserID, id));
+			populateUserWishList(Integer.parseInt(currUserID), ((DefaultListModel)userWishList.getModel()));
+		}
 	}
 	
 	/**
-	 * Removes the selected item from the wishList as well as from the database
+	 * Removes the selected item for the wishlist in the database
+	 */
+	private void removeFromWishList(JList from) throws SQLException
+	{
+		String currUserID = ((String)users.getSelectedItem()).split(":")[0];
+		
+		int[] selectedProducts = from.getSelectedIndices();
+		String currProductName;
+		for(int i : selectedProducts)
+		{
+			currProductName = ((String)from.getModel().getElementAt(i)).split(":")[0];
+			result = query.executeQuery(String.format("SELECT * FROM our_product WHERE Name = '%s'", currProductName));
+			result.first();
+			
+			String id = result.getString("ID");
+			query.execute(String.format("DELETE FROM customer_wish WHERE customer_id = %s AND product_id = %s", currUserID, id));
+			populateUserWishList(Integer.parseInt(id), ((DefaultListModel)userWishList.getModel()));
+		}
+	}
+	
+	/**
+	 * Removes the selected item from the cart
 	 * 
 	 * no return
 	 */
@@ -852,7 +921,7 @@ public class GUI extends JFrame
 		currentPage.setText("" + currentPageNumber);
 		
 		products.setSelectedIndex(-1);
-		try { products.setModel(populateProducts((DefaultListModel)products.getModel())); }
+		try { products.setModel(populateProducts((DefaultListModel)products.getModel(), priceRange.getValue())); }
 		catch (SQLException E) {};
 		
 		if(currentPageNumber == 1)
@@ -876,7 +945,7 @@ public class GUI extends JFrame
 		currentPage.setText("" + currentPageNumber);
 		
 		products.setSelectedIndex(-1);;
-		try { products.setModel(populateProducts((DefaultListModel)products.getModel())); }
+		try { products.setModel(populateProducts((DefaultListModel)products.getModel(), priceRange.getValue())); }
 		catch (SQLException E) {};
 		
 		if(currentPageNumber == MAX_PAGES + 1)
@@ -897,7 +966,411 @@ public class GUI extends JFrame
 	{
 		
 	}
+	
+	/**
+	 * Sets the overall GUI to enabled or disabled
+	 */
+	private void setGUIEnabled(boolean enabled)
+	{ setEnabled(enabled); }
+	
+	/**
+	 * Helper method for turning all the labels into multi line
+	 */
+	private String convertToMulti(String s)
+	{ return "<html>" + s.replaceAll("\n", "<br>"); }
 }
+
+import javax.swing.JList;
+
+/**
+ * TODO
+ * Add a product
+ */
+/**
+ * Admin Page for the GUI
+ * Shows products 
+ * @author martinprice
+ *
+ */
+import java.awt.*;
+import java.sql.*;
+import javax.swing.*;
+
+public class Admin extends JFrame
+{
+	private Connection conn;
+	private Statement query;
+	private ResultSet result;
+	
+	private JPanel restock;
+	private JPanel customers;
+	private JPanel customerUpdates;
+	private JPanel customerOrders;
+	
+	private JLabel productID;
+	private JLabel productName;
+	private JLabel productSupplier;
+	
+	private JLabel customerID;
+	private JTextField customerUserName;
+	private JTextField customerName;
+	private JTextField customerEmail;
+	
+	private JLabel orderProductName;
+	private JLabel orderDatePurchased;
+	private JLabel orderStatus;
+	
+	private JButton addCustomer;
+	private JButton removeCustomer;
+	private JButton updateCustomer;
+	
+	private JList restockList;
+	private JList customersList;
+	private JList customerOrderList;
+	
+	private String username;
+	private String password;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param un, pw : Credentials used for the DB
+	 */ 	
+	public Admin(String un, String pw)
+	{
+		super("Admin Access");
+		if(setUpConnection(un, pw))
+		{
+			System.out.println("CONNECTION ESTABLSIHED");
+			createGUI();
+		}	
+		else
+			System.err.println("COULD NOT CONNECT TO THE DATABASE");
+	}
+	
+	/**
+	 * Initializes SQL variables and connects to the data base
+	 *
+	 * @param un : user name
+	 * @param pw : password
+	 * @return true, no issues
+	 * @throws SQLException 
+	 */
+	private boolean setUpConnection(String un, String pw)
+	{
+		username = un;
+		password = pw;
+		
+		try 
+		{
+			conn = DriverManager.getConnection(String.format("jdbc:mysql://elvis.rowan.edu:3306/%s?&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", un), un, pw);
+			query = conn.createStatement();
+			return true;
+		}
+		catch(SQLException e) {e.printStackTrace(); return false;}
+		
+	}
+
+	/**
+	 * Creates the GUI
+	 */
+	private void createGUI()
+	{
+		setSize(750,500);
+		setLayout(new BorderLayout());
+		
+		buildRestock();
+		buildCustomer();
+		buildCustomerOrders();
+		buildCustomerUpdates();
+		
+		setVisible(true);
+	}
+	
+	/**
+	 * builds the restock list,
+	 * 	displays all products that have been restocked
+	 * 	Place on the West side of the frame
+	 */
+	private void buildRestock()
+	{
+		restock = new JPanel();
+		restock.setPreferredSize(new Dimension(250, 425));
+		restock.setLayout(null);
+		
+		productID = new JLabel("ID");
+		productID.setBounds(25, 310, 50, 20);
+		productName = new JLabel("Name");
+		productName.setBounds(25, 340, 200, 20);
+		productSupplier = new JLabel("Supplier");
+		productSupplier.setBounds(25, 370, 200, 20);
+		
+		try { restockList = new JList(populateRestockList(new DefaultListModel())); }
+		catch (SQLException e) {};
+		restockList.setBounds(0, 0, 245, 300);
+		restockList.addListSelectionListener(a -> {
+			try { populateResupplyInfo(restockList.getSelectedIndex()); } 
+			catch (SQLException e) {} });
+		
+		restock.add(productID);
+		restock.add(productName);
+		restock.add(productSupplier);
+		restock.add(restockList);
+		add(restock, BorderLayout.WEST);
+	}
+	
+	/**
+	 * runs a query to populate the restock list
+	 * 
+	 * @param list : list to be populated
+	 * @return list : populated from the query
+	 * @throws SQLException
+	 */
+	private DefaultListModel populateRestockList(DefaultListModel list) throws SQLException
+	{
+		list = new DefaultListModel();
+		
+		result = query.executeQuery("SELECT * FROM restock");
+		while(result.next())
+			list.addElement(String.format("Restock:\t%s\tOn:\t%s", result.getString("restock_id"), result.getString("date")));
+		return list;
+	}
+	
+	/**
+	 * runs a query to populate the product info labels
+	 * 
+	 * @param index : index of the selected value\
+	 * throws SQLException
+	 */
+	private void populateResupplyInfo(int index) throws SQLException
+	{
+		String[] r = ((String)restockList.getModel().getElementAt(index)).split(":");
+		String r_id = r[1].split("\t")[1];
+		
+		result = query.executeQuery(String.format("SELECT product_id AS ID FROM restock WHERE restock_id = %s", r_id));
+		result.first();
+		String p_id = result.getString("ID");
+		
+		result = query.executeQuery(String.format("SELECT * FROM our_product WHERE ID = %s", p_id));
+		result.first();
+		productID.setText(p_id);
+		productName.setText(result.getString("Name"));
+		productSupplier.setText(result.getString("Supplier"));
+	}
+
+	/**
+	 * Creates the customer Panel
+	 * 	Displays all customers as well as customers their data
+	 * Place on the Center of the frame
+	 */
+	private void buildCustomer()
+	{
+		customers = new JPanel();
+		customers.setPreferredSize(new Dimension(250, 425));
+		customers.setLayout(null);
+		
+		addCustomer = new JButton("ADD");
+		addCustomer.setBounds(80, 310, 75, 20);
+		addCustomer.addActionListener(a -> {
+			try { addCustomer(); } 
+			catch (SQLException e1) {} });
+		
+		removeCustomer = new JButton("REMOVE");
+		removeCustomer.setBounds(80, 340, 75, 20);
+		removeCustomer.addActionListener(a -> {
+			try { removeCustomer(); } 
+			catch (SQLException e1) {} });
+		
+		updateCustomer = new JButton("UPDATE");
+		updateCustomer.setBounds(80, 370, 75, 20);
+		updateCustomer.addActionListener(a -> {
+			try { updateCustomer(); }
+			catch (SQLException e1) {} });
+		
+		try { customersList = new JList(populateCustomersList(new DefaultListModel())); }
+		catch (SQLException e) {};
+		customersList.setBounds(0,0,250,300);
+		customersList.addListSelectionListener(a -> {
+			try 
+			{ 	
+				populateCustomerInfo(customersList.getSelectedIndex()); 
+				customerOrderList.setModel(populateCustomerOrderList(new DefaultListModel(), customersList.getSelectedIndex())); 
+			} 
+			catch (SQLException e) {} });
+		
+		customers.add(addCustomer);
+		customers.add(updateCustomer);
+		customers.add(removeCustomer);
+		customers.add(customersList);
+		add(customers, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Adds a new customer to the database
+	 */
+	private void addCustomer() throws SQLException
+	{
+		String[] name = customerName.getText().split(" ");
+		query.execute(String.format("INSERT INTO customer(username, first_name, last_name, email) VALUES ('%s', '%s', '%s', '%s')", customerUserName.getText(),
+				name[0], name[1], customerEmail.getText()));
+		customersList.setModel(populateCustomersList(((DefaultListModel)customersList.getModel())));
+	}
+	
+	/**
+	 * removes a customer from the database
+	 */
+	private void removeCustomer() throws SQLException
+	{
+		String id = customerID.getText();
+		query.execute(String.format("DELETE FROM customer WHERE customer_id = %s",id));
+		customersList.setSelectedIndex(-1);
+		customersList.setModel(populateCustomersList(((DefaultListModel)customersList.getModel())));
+	}
+	
+	/**
+	 * updates a customer from the dataBase
+	 */
+	private void updateCustomer() throws SQLException
+	{
+		String[] name = customerName.getText().split(" ");
+		query.execute(String.format("UPDATE customer SET username = '%s', first_name = '%s', last_name = '%s', email = '%s' WHERE customer_id = '%s'",
+				customerUserName.getText(), name[0], name[1], customerEmail.getText(), customerID.getText()));
+		customersList.setSelectedIndex(-1);
+		customersList.setModel(populateCustomersList(((DefaultListModel)customersList.getModel())));
+	}
+	
+	/**
+	 * runs a query to populate the customers list
+	 * 
+	 * @param list : list to be populated
+	 * @return list : populate form the query
+	 * @throws SQLException
+	 */
+	private DefaultListModel populateCustomersList(DefaultListModel list) throws SQLException
+	{
+		list = new DefaultListModel();
+		
+		result = query.executeQuery("SELECT * FROM customer");
+		while(result.next())
+			list.addElement(String.format("User ID:\t%s\tUsername:\t%s", result.getString("customer_id"), result.getString("username")));
+		return list;
+	}
+
+	/**
+	 * runs a query to populate the customer information
+	 * 
+	 * @param index: selected index of the customer
+	 * @throws SQLException
+	 */
+	private void populateCustomerInfo(int index) throws SQLException
+	{
+		String[] c = ((String)customersList.getModel().getElementAt(index)).split(":");
+		String c_id = c[1].split("\t")[1];
+		
+		result = query.executeQuery(String.format("SELECT * FROM customer WHERE customer_id = %s", c_id));
+		result.first();
+		customerID.setText(result.getString("customer_id"));
+		customerName.setText(String.format("%s %s", result.getString("first_name"), result.getString("last_name")));
+		customerEmail.setText(result.getString("email"));
+		customerUserName.setText(result.getString("username"));
+	}
+	
+	/**
+	 * builds the customer orders
+	 * 	Found on the East part of the gui
+	 */
+	private void buildCustomerOrders()
+	{
+		customerOrders = new JPanel();
+		customerOrders.setPreferredSize(new Dimension(250, 425));
+		customerOrders.setLayout(null);
+		
+		customerOrderList = new JList(new DefaultListModel());
+		customerOrderList.setBounds(5, 0, 245, 300);
+		customerOrderList.addListSelectionListener(a -> {
+			try { populateOrderInfo(customerOrderList.getSelectedIndex()); } 
+			catch (SQLException e) {} });
+		
+		orderProductName = new JLabel("Name");
+		orderProductName.setBounds(25, 310, 50, 20);
+		orderDatePurchased = new JLabel("Date");
+		orderDatePurchased.setBounds(25, 340, 200, 20);
+		orderStatus = new JLabel("Status");
+		orderStatus.setBounds(25, 370, 200, 20);
+		
+		customerOrders.add(customerOrderList);
+		customerOrders.add(orderProductName);
+		customerOrders.add(orderDatePurchased);
+		customerOrders.add(orderStatus);
+		add(customerOrders, BorderLayout.EAST);
+	}
+	
+	/**
+	 * runs a query to populate recent transactions made by the customer
+	 * 
+	 * @param list : list to be populated
+	 * @param index : selected customer
+	 * @return list : populated with user purchased
+	 * @throws SQLException
+	 */
+	private DefaultListModel populateCustomerOrderList(DefaultListModel list, int index) throws SQLException
+	{
+		list = new DefaultListModel();
+		String[] c = ((String)customersList.getModel().getElementAt(index)).split(":");
+		String id = c[1].split("\t")[1];
+		result = query.executeQuery(String.format("SELECT * FROM %s.order WHERE customer_id = %s ORDER BY date DESC LIMIT 17", username, id));
+		while(result.next())
+			list.addElement(String.format("Order ID:\t%s\t\tProduct ID:\t%s", result.getString("order_id"), result.getString("product_id")));
+		return list;
+	}
+	
+	/**
+	 * runs a query to populate the labels for each order
+	 * 
+	 * @param index : selected index of an order
+	 * @throws SQLException
+	 */
+	private void populateOrderInfo(int index) throws SQLException
+	{
+		String[] o = ((String)customerOrderList.getModel().getElementAt(index)).split(":");
+		String p_id = o[2].trim();
+		String o_id = o[1].split("\t")[1];
+		
+		result = query.executeQuery(String.format("SELECT * FROM %s.order WHERE order_id = %s", username, o_id));
+		result.first();
+		String p_name = result.getString("product_name");
+		orderProductName.setText(p_name);
+		orderDatePurchased.setText(result.getString("date"));
+		orderStatus.setText(result.getString("status"));
+	}
+
+	/**
+	 * builds the options bar for modifying the customers
+	 * Goes on the south of the frame
+	 */
+	private void buildCustomerUpdates()
+	{
+		customerUpdates = new JPanel();
+		customerUpdates.setLayout(null);
+		customerUpdates.setPreferredSize(new Dimension(750, 75));
+		
+		customerID = new JLabel("ID");
+		customerID.setBounds(150, 40, 25, 20);
+		customerName = new JTextField("Name");
+		customerName.setBounds(180, 40, 120, 20);
+		customerEmail = new JTextField("Email");
+		customerEmail.setBounds(305, 40, 200, 20);
+		customerUserName = new JTextField("Username");
+		customerUserName.setBounds(510, 40, 150, 20);
+
+		customerUpdates.add(customerID);
+		customerUpdates.add(customerName);
+		customerUpdates.add(customerEmail);
+		customerUpdates.add(customerUserName);
+		add(customerUpdates, BorderLayout.SOUTH);
+	}
+}
+
 
 /**
  * Helper class for the GUI brings up a window to place an order
@@ -915,6 +1388,18 @@ import java.sql.Statement;
 
 import javax.swing.*;
 
+/**
+ * TODO Estimated Shipping
+ * 	Arrival data
+ * 	Total Cost
+ * 	Move Things over
+ */
+
+/**
+ * 
+ * @author martinprice
+ *
+ */
 public class Order extends JFrame
 {
 	private JPanel addresses;
@@ -931,6 +1416,7 @@ public class Order extends JFrame
 	
 	
 	private String username;
+	private String currentUserId;
 	private Connection conn;
 	private Statement query;
 	private ResultSet result;
@@ -944,6 +1430,8 @@ public class Order extends JFrame
 	public Order(JList cart, String c_id, String un, String pw)
 	{
 		super("Place Order");
+		currentUserId = c_id;
+		username = un;
 		if(setUpConnection(un, pw))
 		{
 			System.out.println("CONNECTION ESTABLSIHED");
@@ -1057,8 +1545,7 @@ public class Order extends JFrame
 	{
 		String[] a = address.split("\t");
 		String text = String.format("Ship the order to:\nStreet: %s\nCity: %s\nState: %s\nZip Code: %s", a[0], a[1], a[2], a[3]);
-		addressLabel.setText(text);
-		
+		addressLabel.setText(convertToMulti(text));
 	}
 	
 	/**
@@ -1072,7 +1559,9 @@ public class Order extends JFrame
 		
 		placeOrder = new JButton("Order Cart");
 		placeOrder.setBounds(250,40,75,20);
-		placeOrder.addActionListener(e -> placeOrder());
+		placeOrder.addActionListener(e -> {
+			try { placeOrder(); } 
+			catch (SQLException e1) {} });
 		
 		cancelOrder = new JButton("Cancel Order");
 		cancelOrder.setBounds(375, 40, 100, 20);
@@ -1084,16 +1573,40 @@ public class Order extends JFrame
 		add(buttons, BorderLayout.SOUTH);
 	}
 
-	
-	private void placeOrder() 
+	/**
+	 * Places an order into the query
+	 */
+	private void placeOrder() throws SQLException
 	{
-		setVisible(false);
+		for(int i = 0; i < shoppingCart.getModel().getSize(); i++)
+		{
+			String currProductName = ((String)shoppingCart.getModel().getElementAt(i)).split(":")[0];
+			result = query.executeQuery(String.format("SELECT * FROM overall_inventory WHERE Name = '%s'", currProductName));
+			result.first();
+			
+			String name = result.getString("Name");
+			String id = result.getString("ID");
+			String price = result.getString("Price");
+			Double priceNum; 
+			try { priceNum = Double.parseDouble(price); }
+			catch(NumberFormatException e) { priceNum = Double.parseDouble(((String)shoppingCart.getModel().getElementAt(i)).split(":")[1].trim().substring(1)); }
+			
+			System.out.println(String.format("CALL %s.place_order(1, %s, %s, '%s')", username, currentUserId, id, name));
+			query.execute(String.format("CALL %s.place_order(1, %s, %s, '%s')", username, currentUserId, id, name));
+			System.out.println("HERE");
+		}
 	}
 	
 	private void cancelOrder()
 	{
 		System.exit(0);
 	}
+	
+	/**
+	 * Helper method for turning all the labels into multi line
+	 */
+	private String convertToMulti(String s)
+	{ return "<html>" + s.replaceAll("\n", "<br>"); }
 }
 
 public class Main 
