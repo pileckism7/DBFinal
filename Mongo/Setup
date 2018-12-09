@@ -1,0 +1,15 @@
+Install local mongoDB server /// Or use Myers Mongo Server..
+
+1.
+Create schema in mongoDB cmd 
+Select schema:
+use "schema name"
+
+
+2.
+In mongoDB server ->>
+mongoimport --db "schema name" --collection products --file :PATH/products.json
+mongoimport --db "schema name" --collection customers --file :PATH/customers.json
+
+3. in mongoDB cmd -> execute queries..
+
