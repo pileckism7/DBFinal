@@ -1,0 +1,518 @@
+{
+	"Company" : "Daymnzon",
+	"Customers" : 
+				[
+					{
+						"customerID" : 1,
+						"username" : "Pileckism7",
+						"name" : "Mantas Pileckis",
+						"email" : "pileckism7@email.com"
+					},
+					{
+						"customerID" : 2,
+						"username" : "Pricem2",
+						"name" : "Martin Price",
+						"email" : "pricem2@email.com"
+					},
+					{
+						"customerID" : 3,
+						"username" : "Malitskyc5",
+						"name" : "Chris Malitsky",
+						"email" : "Malitskyc5@email.com"
+					},
+					{
+						"customerID" : 4,
+						"username" : "PaytonM3",
+						"name" : "Payton Manning",
+						"email" : "PaytonM3@email.com"
+					},
+					{
+						"customerID" : 5,
+						"username" : "Rosed2",
+						"name" : "Derrick Rose",
+						"email" : "Rosed2@email.com"
+					},
+					{
+						"customerID" : 6,
+						"username" : "Rogersa6",
+						"name" : "Aarin Rogers",
+						"email" : "Rogersa6@email.com"
+					},
+					{
+						"customerID" : 7,
+						"username" : "Bilzeriand1",
+						"name" : "Dan Bilzarian",
+						"email" : "Bilzeriand1@email.com"
+					},
+					{
+						"customerID" : 8,
+						"username" : "Pittb8",
+						"name" : "Brad Pitt",
+						"email" : "Pittb8@email.com"
+					},
+					{
+						"customerID" : 9,
+						"username" : "Rosed6",
+						"name" : "Demi Rose",
+						"email" : "Rosed6@email.com"
+					},
+					{
+						"customerID" : 10,
+						"username" : "Ambriosioa9",
+						"name" : "Alessandra Ambrosio",
+						"email" : "Ambriosioa9@email.com"
+					}
+				]
+}
+
+{
+	"Company" : "Other",
+	"Customers" : [
+					{
+						"customerID" : 11000,
+						"name" : "Jon Yang",
+						"email" : "jon24@adventure-works.com"
+					},
+					{
+						"customerID" : 11001,
+						"name" : "Eugene Huang",
+						"email" : "eugene10@adventure-works.com"
+					},
+					{
+						"customerID" : 11002,
+						"name" : "Ruben Torres",
+						"email" : "ruben35@adventure-works.com"
+					},
+					{
+						"customerID" : 11003,
+						"name" : "Christy Zhu",
+						"email" : "christy12@adventure-works.com"
+					},
+					{
+						"customerID" : 11004,
+						"name" : "Elizabeth Johnson",
+						"email" : "elizabeth5@adventure-works.com"
+					},
+					{
+						"customerID" : 11005,
+						"name" : "Julio Ruiz",
+						"email" : "julio1@adventure-works.com"
+					},
+					{
+						"customerID" : 11006,
+						"name" : "Janet Alvarez",
+						"email" : "janet9@adventure-works.com"
+					},
+					{
+						"customerID" : 11007,
+						"name" : "Marco Mehta",
+						"email" : "marco14@adventure-works.com"
+					},
+					{
+						"customerID" : 11008,
+						"name" : "Rob Verhoff",
+						"email" : "rob4@adventure-works.com"
+					},
+					{
+						"customerID" : 11009,
+						"name" : "Shannon Carlson",
+						"email" : "shannon38@adventure-works.com"
+					},
+					{
+						"customerID" : 11010,
+						"name" : "Jacquelyn Suarez",
+						"email" : "jacquelyn20@adventure-works.com"
+					},
+					{
+						"customerID" : 11011,
+						"name" : "Curtis Lu",
+						"email" : "curtis9@adventure-works.com"
+					},
+					{
+						"customerID" : 11012,
+						"name" : "Lauren Walker",
+						"email" : "lauren41@adventure-works.com"
+					},
+					{
+						"customerID" : 11013,
+						"name" : "Ian Jenkins",
+						"email" : "ian47@adventure-works.com"
+					},
+					{
+						"customerID" : 11014,
+						"name" : "Sydney Bennett",
+						"email" : "sydney23@adventure-works.com"
+					},
+					{
+						"customerID" : 11015,
+						"name" : "Chloe Young",
+						"email" : "chloe23@adventure-works.com"
+					},
+					{
+						"customerID" : 11016,
+						"name" : "Wyatt Hill",
+						"email" : "wyatt32@adventure-works.com"
+					},
+					{
+						"customerID" : 11017,
+						"name" : "Shannon Wang",
+						"email" : "shannon1@adventure-works.com"
+					},
+					{
+						"customerID" : 11018,
+						"name" : "Clarence Rai",
+						"email" : "clarence32@adventure-works.com"
+					},
+					{
+						"customerID" : 11019,
+						"name" : "Luke Lal",
+						"email" : "luke18@adventure-works.com"
+					},
+					{
+						"customerID" : 11020,
+						"name" : "Jordan King",
+						"email" : "jordan73@adventure-works.com"
+					},
+					{
+						"customerID" : 11021,
+						"name" : "Destiny Wilson",
+						"email" : "destiny7@adventure-works.com"
+					},
+					{
+						"customerID" : 11022,
+						"name" : "Ethan Zhang",
+						"email" : "ethan20@adventure-works.com"
+					},
+					{
+						"customerID" : 11023,
+						"name" : "Seth Edwards",
+						"email" : "seth46@adventure-works.com"
+					},
+					{
+						"customerID" : 11024,
+						"name" : "Russell Xie",
+						"email" : "russell7@adventure-works.com"
+					},
+					{
+						"customerID" : 11025,
+						"name" : "Alejandro Beck",
+						"email" : "alejandro45@adventure-works.com"
+					},
+					{
+						"customerID" : 11026,
+						"name" : "Harold Sai",
+						"email" : "harold3@adventure-works.com"
+					},
+					{
+						"customerID" : 11027,
+						"name" : "Jessie Zhao",
+						"email" : "jessie16@adventure-works.com"
+					},
+					{
+						"customerID" : 11028,
+						"name" : "Jill Jimenez",
+						"email" : "jill13@adventure-works.com"
+					},
+					{
+						"customerID" : 11029,
+						"name" : "Jimmy Moreno",
+						"email" : "jimmy9@adventure-works.com"
+					},
+					{
+						"customerID" : 1,
+						"name" : "MARY SMITH",
+						"email" : "MARY.SMITH@sakilacustomer.org"
+					},
+					{
+						"customerID" : 2,
+						"name" : "PATRICIA JOHNSON",
+						"email" : "PATRICIA.JOHNSON@sakilacustomer.org"
+					},
+					{
+						"customerID" : 3,
+						"name" : "LINDA WILLIAMS",
+						"email" : "LINDA.WILLIAMS@sakilacustomer.org"
+					},
+					{
+						"customerID" : 4,
+						"name" : "BARBARA JONES",
+						"email" : "BARBARA.JONES@sakilacustomer.org"
+					},
+					{
+						"customerID" : 5,
+						"name" : "ELIZABETH BROWN",
+						"email" : "ELIZABETH.BROWN@sakilacustomer.org"
+					},
+					{
+						"customerID" : 6,
+						"name" : "JENNIFER DAVIS",
+						"email" : "JENNIFER.DAVIS@sakilacustomer.org"
+					},
+					{
+						"customerID" : 7,
+						"name" : "MARIA MILLER",
+						"email" : "MARIA.MILLER@sakilacustomer.org"
+					},
+					{
+						"customerID" : 8,
+						"name" : "SUSAN WILSON",
+						"email" : "SUSAN.WILSON@sakilacustomer.org"
+					},
+					{
+						"customerID" : 9,
+						"name" : "MARGARET MOORE",
+						"email" : "MARGARET.MOORE@sakilacustomer.org"
+					},
+					{
+						"customerID" : 10,
+						"name" : "DOROTHY TAYLOR",
+						"email" : "DOROTHY.TAYLOR@sakilacustomer.org"
+					},
+					{
+						"customerID" : 11,
+						"name" : "LISA ANDERSON",
+						"email" : "LISA.ANDERSON@sakilacustomer.org"
+					},
+					{
+						"customerID" : 12,
+						"name" : "NANCY THOMAS",
+						"email" : "NANCY.THOMAS@sakilacustomer.org"
+					},
+					{
+						"customerID" : 13,
+						"name" : "KAREN JACKSON",
+						"email" : "KAREN.JACKSON@sakilacustomer.org"
+					},
+					{
+						"customerID" : 14,
+						"name" : "BETTY WHITE",
+						"email" : "BETTY.WHITE@sakilacustomer.org"
+					},
+					{
+						"customerID" : 15,
+						"name" : "HELEN HARRIS",
+						"email" : "HELEN.HARRIS@sakilacustomer.org"
+					},
+					{
+						"customerID" : 16,
+						"name" : "SANDRA MARTIN",
+						"email" : "SANDRA.MARTIN@sakilacustomer.org"
+					},
+					{
+						"customerID" : 17,
+						"name" : "DONNA THOMPSON",
+						"email" : "DONNA.THOMPSON@sakilacustomer.org"
+					},
+					{
+						"customerID" : 18,
+						"name" : "CAROL GARCIA",
+						"email" : "CAROL.GARCIA@sakilacustomer.org"
+					},
+					{
+						"customerID" : 19,
+						"name" : "RUTH MARTINEZ",
+						"email" : "RUTH.MARTINEZ@sakilacustomer.org"
+					},
+					{
+						"customerID" : 20,
+						"name" : "SHARON ROBINSON",
+						"email" : "SHARON.ROBINSON@sakilacustomer.org"
+					},
+					{
+						"customerID" : 21,
+						"name" : "MICHELLE CLARK",
+						"email" : "MICHELLE.CLARK@sakilacustomer.org"
+					},
+					{
+						"customerID" : 22,
+						"name" : "LAURA RODRIGUEZ",
+						"email" : "LAURA.RODRIGUEZ@sakilacustomer.org"
+					},
+					{
+						"customerID" : 23,
+						"name" : "SARAH LEWIS",
+						"email" : "SARAH.LEWIS@sakilacustomer.org"
+					},
+					{
+						"customerID" : 24,
+						"name" : "KIMBERLY LEE",
+						"email" : "KIMBERLY.LEE@sakilacustomer.org"
+					},
+					{
+						"customerID" : 25,
+						"name" : "DEBORAH WALKER",
+						"email" : "DEBORAH.WALKER@sakilacustomer.org"
+					},
+					{
+						"customerID" : 26,
+						"name" : "JESSICA HALL",
+						"email" : "JESSICA.HALL@sakilacustomer.org"
+					},
+					{
+						"customerID" : 27,
+						"name" : "SHIRLEY ALLEN",
+						"email" : "SHIRLEY.ALLEN@sakilacustomer.org"
+					},
+					{
+						"customerID" : 28,
+						"name" : "CYNTHIA YOUNG",
+						"email" : "CYNTHIA.YOUNG@sakilacustomer.org"
+					},
+					{
+						"customerID" : 29,
+						"name" : "ANGELA HERNANDEZ",
+						"email" : "ANGELA.HERNANDEZ@sakilacustomer.org"
+					},
+					{
+						"customerID" : 30,
+						"name" : "MELISSA KING",
+						"email" : "MELISSA.KING@sakilacustomer.org"
+					},
+					{
+						"customerID" : 20,
+						"name" : "George Li",
+						"email" : "GeorgeLi@northwind.com"
+					},
+					{
+						"customerID" : 4,
+						"name" : "Christina Lee",
+						"email" : "ChristinaLee@northwind.com"
+					},
+					{
+						"customerID" : 25,
+						"name" : "John Rodman",
+						"email" : "JohnRodman@northwind.com"
+					},
+					{
+						"customerID" : 9,
+						"name" : "Sven Mortensen",
+						"email" : "SvenMortensen@northwind.com"
+					},
+					{
+						"customerID" : 14,
+						"name" : "Carlos Grilo",
+						"email" : "CarlosGrilo@northwind.com"
+					},
+					{
+						"customerID" : 19,
+						"name" : "Alexander Eggerer",
+						"email" : "AlexanderEggerer@northwind.com"
+					},
+					{
+						"customerID" : 3,
+						"name" : "Thomas Axen",
+						"email" : "ThomasAxen@northwind.com"
+					},
+					{
+						"customerID" : 24,
+						"name" : "Jonas Hasselberg",
+						"email" : "JonasHasselberg@northwind.com"
+					},
+					{
+						"customerID" : 8,
+						"name" : "Elizabeth Andersen",
+						"email" : "ElizabethAndersen@northwind.com"
+					},
+					{
+						"customerID" : 29,
+						"name" : "Soo Jung Lee",
+						"email" : "SooJungLee@northwind.com"
+					},
+					{
+						"customerID" : 13,
+						"name" : "Andre Ludick",
+						"email" : "AndreLudick@northwind.com"
+					},
+					{
+						"customerID" : 18,
+						"name" : "Catherine Autier Miconi",
+						"email" : "CatherineAutierMiconi@northwind.com"
+					},
+					{
+						"customerID" : 2,
+						"name" : "Antonio Gratacos Solsona",
+						"email" : "AntonioGratacosSolsona@northwind.com"
+					},
+					{
+						"customerID" : 23,
+						"name" : "Michael Entin",
+						"email" : "MichaelEntin@northwind.com"
+					},
+					{
+						"customerID" : 7,
+						"name" : "Ming-Yang Xie",
+						"email" : "Ming-YangXie@northwind.com"
+					},
+					{
+						"customerID" : 28,
+						"name" : "Amritansh Raghav",
+						"email" : "AmritanshRaghav@northwind.com"
+					},
+					{
+						"customerID" : 12,
+						"name" : "John Edwards",
+						"email" : "JohnEdwards@northwind.com"
+					},
+					{
+						"customerID" : 17,
+						"name" : "Jean Philippe Bagel",
+						"email" : "JeanPhilippeBagel@northwind.com"
+					},
+					{
+						"customerID" : 1,
+						"name" : "Anna Bedecs",
+						"email" : "AnnaBedecs@northwind.com"
+					},
+					{
+						"customerID" : 22,
+						"name" : "Luciana Ramos",
+						"email" : "LucianaRamos@northwind.com"
+					},
+					{
+						"customerID" : 6,
+						"name" : "Francisco Pérez-Olaeta",
+						"email" : "FranciscoPérez-Olaeta@northwind.com"
+					},
+					{
+						"customerID" : 27,
+						"name" : "Karen Toh",
+						"email" : "KarenToh@northwind.com"
+					},
+					{
+						"customerID" : 11,
+						"name" : "Peter Krschne",
+						"email" : "PeterKrschne@northwind.com"
+					},
+					{
+						"customerID" : 16,
+						"name" : "Daniel Goldschmidt",
+						"email" : "DanielGoldschmidt@northwind.com"
+					},
+					{
+						"customerID" : 21,
+						"name" : "Bernard Tham",
+						"email" : "BernardTham@northwind.com"
+					},
+					{
+						"customerID" : 5,
+						"name" : "Martin O’Donnell",
+						"email" : "MartinO’Donnell@northwind.com"
+					},
+					{
+						"customerID" : 26,
+						"name" : "Run Liu",
+						"email" : "RunLiu@northwind.com"
+					},
+					{
+						"customerID" : 10,
+						"name" : "Roland Wacker",
+						"email" : "RolandWacker@northwind.com"
+					},
+					{
+						"customerID" : 15,
+						"name" : "Helena Kupkova",
+						"email" : "HelenaKupkova@northwind.com"
+					}
+				]
+
+}
