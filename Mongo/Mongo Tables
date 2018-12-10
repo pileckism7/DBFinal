@@ -1,77 +1,93 @@
+FIRST NEED TO - >>>
+//SET UP THE COLLECTIONS
+
+//Create orders
+db.createCollection("orders")
+
+// Set all customers last purchase date
+ db.customers.updateMany({}, {$set : {"LastPurchase" : new Date(ISODate().getTime()-1296000000)}})
+ 
+//Set all items last purchase date
+db.products.updateMany({Market : "Daymnzon"}, {$set : {"LastPurchased" : new Date(ISODate().getTime()-12960000000)}})
+
+// Set all items restocked value to 0
+db.products.updateMany({Market : "Daymnzon"}, {$set : {"Restocked" : 0}})
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+
+
 ##View our Customers
 ---------------------------------------------------------------------------------------------------------
-db.customers.distinct("Customers", {Company :"Daymnzon"})
+db.customers.find({Market : "Daymnzon"}, {_id : 0, name : 1, email :1, username :1}).pretty()
 ---------------------------------------------------------------------------------------------------------
 
 ##View our suppliers
 ---------------------------------------------------------------------------------------------------------
-db.products.distinct("Products.Supplier", {Company :"Daymnzon"})
+db.products.distinct("Supplier", {Market: "Daymnzon"})
 ---------------------------------------------------------------------------------------------------------
 
 //View our products
 ---------------------------------------------------------------------------------------------------------
-db.products.aggregate(
-	{$project : {Company : 1, Products:1 }}, 
-	{$unwind: "$Products"},
-	{$match : {"Company" : "Daymnzon"}}
-).pretty()
+db.products.find({Market :"Daymnzon"}, {Supplier : 1, Name : 1, Description : 1, Price : 1 , Category : 1, Type : 1, _id : 0 }).pretty()
 ---------------------------------------------------------------------------------------------------------
 
 ##View partner Customers
 ---------------------------------------------------------------------------------------------------------
- db.customers.distinct("Customers", {Company :"Other"})
+db.customers.find({Market : {$nin : ["Daymnzon"]}}, {_id : 0, name : 1, email :1, username :1})
 ---------------------------------------------------------------------------------------------------------
 
 ##View products that are not of Daymnzon Company - > Partner Products Only
 ---------------------------------------------------------------------------------------------------------
-db.products.aggregate(
-	{$project : {Company : 1, Products:1}},
-	{$unwind: "$Products"},
-	{$match : {"Company" : {$nin : ["Daymnzon"]}}}).pretty()
+db.products.find({Market : {$nin : ["Daymnzon"]}}, {Supplier : 1, Name : 1, Description : 1, Price : 1 , Category : 1, Type : 1, _id : 0, Market : 1 }).pretty()
 ---------------------------------------------------------------------------------------------------------
 
 ##View partner suppliers
 ---------------------------------------------------------------------------------------------------------
-db.products.distinct("Products.Supplier", {Company : {$nin :["Daymnzon"]}})
+db.products.distinct("Supplier", {Market : {$nin :["Daymnzon"]}})
 ---------------------------------------------------------------------------------------------------------
 
 ##View our inventory
 ---------------------------------------------------------------------------------------------------------
-db.products.distinct("Products", {Company :"Daymnzon"})
+db.products.find({Market : "Daymnzon"}).pretty()
 ---------------------------------------------------------------------------------------------------------
 
 ##SEARCH BY CATEGORY -> Replace ##TYPE## by category which you want to search..
 ---------------------------------------------------------------------------------------------------------
- db.products.aggregate( {$project : {Company : 1, Products:1 }},  {$unwind: "$Products"}, {$match : {"Products.Type" : "##TYPE##"}} ).pretty()
+db.products.find({Type : ##TYPE##}, {Supplier : 1, Name : 1, Description : 1, Price : 1 , Category : 1, Type : 1, _id : 0 }).pretty()
  ---------------------------------------------------------------------------------------------------------
  
- ##Restocking Order
- ---------------------------------------------------------------------------------------------------------
- 
- ---------------------------------------------------------------------------------------------------------
- 
- ##Place Order
- ---------------------------------------------------------------------------------------------------------
- 
- ---------------------------------------------------------------------------------------------------------
+##Order Procedure
+//place order into orders table
+db.orders.insert({Customer : "Mantas Pileckis", Products :  [{product_id : 101, Supplier : "Apple", Name : "Air Pods", Description : "Wireless headphones", Price : "149.99", Amount: 1}], OrderPlaced : new Date(ISODate()).toDateString(), EstShip: (new Date(ISODate().getTime() + 345600000)).toDateString() })
+//decriment the value
+db.products.update({Market : "Daymnzon", product_id : 101}, {$inc :{ Stock : -1}})
+db.products.update({Market : "Daymnzon", product_id : 101}, {$set : {"LastPurchased" : new Date(ISODate().getTime())}})
+//if needed restock and log how many times its been restocked and date
+db.products.update({Market : "Daymnzon", product_id : 101}, {$inc :{ Stock : 100, Restocked : 1}})
+db.products.update({Market : "Daymnzon", product_id : 101}, {$set : {"LastRestock" : new Date(ISODate()).toDateString()}})
+//Update customers last purchase date
+db.customers.update({name: "Mantas Pileckis"}, {$set : {"LastPurchase" : new Date(ISODate().getTime())}})
  
  ##List all items that been restocked
  ---------------------------------------------------------------------------------------------------------
- 
+ db.products.find({Market : "Daymnzon", Restocked : {$gt : 0}}).pretty()
  ---------------------------------------------------------------------------------------------------------
  
- ##Not too active customers
+ ##Not too active customers 10 days
+ ---------------------------------------------------------------------------------------------------------
+ db.customers.find({Market : "Daymnzon", LastPurchase : {$lt : new Date(ISODate().getTime()-864000000)}}).pretty()
  ---------------------------------------------------------------------------------------------------------
  
+ ##Not selling too well items 10 days
  ---------------------------------------------------------------------------------------------------------
- 
- ##Not selling too well items
- ---------------------------------------------------------------------------------------------------------
- 
+  db.products.find({Market : "Daymnzon", LastPurchased : {$lt : new Date(ISODate().getTime()-864000000)}}).pretty()
  ---------------------------------------------------------------------------------------------------------
  
  ##When item will ship
  ---------------------------------------------------------------------------------------------------------
- 
+ db.orders.find({Customer : "Mantas Pileckis"}, { _id : 1, OrderPlaced : 1, EstShip : 1}).pretty()
  ---------------------------------------------------------------------------------------------------------
  
